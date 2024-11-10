@@ -3,8 +3,8 @@ import SwiftUI
 struct CodeEditorView: View {
     @StateObject private var viewModel = CodeEditorViewModel()
     let problem: Problem?
-    @State private var selectedTestIndex: Int?
-
+    @State private var selectedTestIndex: Int = 0
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -26,6 +26,8 @@ struct CodeEditorView: View {
                     .frame(height: 300)
                     .background(Color.white)
                     .cornerRadius(4)
+                    .autocapitalization(.none) // Disable auto-capitalization
+                    .disableAutocorrection(true) // Disable auto-correction
 
                 // Run Code Button
                 Button(action: {
@@ -48,14 +50,14 @@ struct CodeEditorView: View {
 
                     VStack {
                         HStack {
-                            Text(allPassed ? "All Tests Passed" : "Some Tests Failed")
+                            Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
                                 .foregroundColor(allPassed ? .green : .red)
                                 .font(.headline)
                             Spacer()
                             Text("Execution Time: \(viewModel.executionTime, specifier: "%.2f")s")
                                 .foregroundColor(.secondary)
                         }
-                        .padding()
+                        .padding(15)
                         .background(summaryColor)
                         .cornerRadius(4)
                     }
@@ -71,13 +73,18 @@ struct CodeEditorView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
                                 ForEach(viewModel.testCases.indices, id: \.self) { index in
+                                    let testCase = viewModel.testCases[index]
+                                    let passed = testCase.passed
+                                    let isSelected = selectedTestIndex == index
+                                    let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
+
                                     Button(action: {
                                         selectedTestIndex = index
                                     }) {
-                                        Text("Test \(index + 1)")
-                                            .padding()
-                                            .background(selectedTestIndex == index ? Color.blue.opacity(0.2) : Color(UIColor.systemGray5))
-                                            .foregroundColor(selectedTestIndex == index ? .blue : .primary)
+                                        Text("Case \(index + 1)")
+                                            .padding(8)
+                                            .background(buttonColor)
+                                            .foregroundColor(isSelected ? .white : (passed ? .green : .red))
                                             .cornerRadius(4)
                                     }
                                 }
@@ -86,8 +93,8 @@ struct CodeEditorView: View {
                         }
 
                         // Selected Test Case Details
-                        if let selectedIndex = selectedTestIndex {
-                            let testCase = viewModel.testCases[selectedIndex]
+                        if !viewModel.testCases.isEmpty  {
+                            let testCase = viewModel.testCases[selectedTestIndex]
 
                             VStack(alignment: .leading, spacing: 8) {
                                 CodeBlock(label: "Input:", content: "[\(testCase.input)]")
