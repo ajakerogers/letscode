@@ -15,7 +15,8 @@ class MockCodeExecutionService {
                 return updatedTestCase
             }
 
-            let response = CodeExecutionResponse(testCaseResults: updatedTestCases, consoleOutput: "Executed code successfully")
+            let consoleOutput = "Executed code successfully with mock logs"
+            let response = CodeExecutionResponse(testCaseResults: updatedTestCases, consoleOutput: consoleOutput)
             completion(response)
         }
     }
