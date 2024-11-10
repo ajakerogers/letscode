@@ -3,7 +3,7 @@ import SwiftUI
 struct CodeEditorView: View {
     @StateObject private var viewModel = CodeEditorViewModel()
     let problem: Problem?
-    @State private var expandedIndices: Set<Int> = []
+    @State private var selectedTestIndex: Int?
 
     var body: some View {
         ScrollView {
@@ -41,7 +41,7 @@ struct CodeEditorView: View {
                 .disabled(viewModel.isLoading)
                 .padding()
 
-                // Summary of Test Results
+                // Execution Summary
                 if !viewModel.isLoading && !viewModel.testCases.isEmpty {
                     let allPassed = viewModel.testCases.allSatisfy { $0.passed }
                     let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
@@ -60,37 +60,35 @@ struct CodeEditorView: View {
                         .cornerRadius(4)
                     }
                     .padding(.horizontal)
-                }
 
-                // Test Cases List
-                if !viewModel.isLoading && !viewModel.testCases.isEmpty {
-                    ForEach(viewModel.testCases.indices, id: \.self) { index in
-                        let testCase = viewModel.testCases[index]
-                        let isExpanded = expandedIndices.contains(index)
+                    // Test Results Section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Test Results")
+                            .font(.headline)
+                            .padding(.leading)
 
-                        Button(action: {
-                            if isExpanded {
-                                expandedIndices.remove(index)
-                            } else {
-                                expandedIndices.insert(index)
+                        // Test Case Selectors
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(viewModel.testCases.indices, id: \.self) { index in
+                                    Button(action: {
+                                        selectedTestIndex = index
+                                    }) {
+                                        Text("Test \(index + 1)")
+                                            .padding()
+                                            .background(selectedTestIndex == index ? Color.blue.opacity(0.2) : Color(UIColor.systemGray5))
+                                            .foregroundColor(selectedTestIndex == index ? .blue : .primary)
+                                            .cornerRadius(4)
+                                    }
+                                }
                             }
-                        }) {
-                            HStack {
-                                Text("Test \(index + 1): \(testCase.passed ? "✅ Passed" : "❌ Failed")")
-                                    .foregroundColor(testCase.passed ? .green : .red)
-                                    .font(.body)
-                                Spacer()
-                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                    .foregroundColor(.gray)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color(UIColor.systemGray5))
-                            .cornerRadius(4)
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
 
-                        if isExpanded {
+                        // Selected Test Case Details
+                        if let selectedIndex = selectedTestIndex {
+                            let testCase = viewModel.testCases[selectedIndex]
+
                             VStack(alignment: .leading, spacing: 8) {
                                 CodeBlock(label: "Input:", content: "[\(testCase.input)]")
                                 CodeBlock(label: "Expected Output:", content: "[\(testCase.expectedOutput)]")
@@ -103,6 +101,7 @@ struct CodeEditorView: View {
                             .padding(.horizontal)
                         }
                     }
+                    .padding(.top)
                 }
             }
             .padding()
