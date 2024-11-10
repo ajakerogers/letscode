@@ -14,14 +14,15 @@ class CodeEditorViewModel: ObservableObject {
         guard !code.isEmpty else { return }
         isLoading = true
         output = "Running..."
-        self.testCases = testCases
+        self.testCases = []
 
         codeExecutionService.executeCode(code, testCases: testCases) { [weak self] response in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 self?.testCases = response.testCaseResults
                 self?.consoleOutput = response.consoleOutput
-                self?.executionTime = response.testCaseResults.reduce(0) { $0 + ($1.passed ? 0.2 : 0.5) }            }
+                self?.executionTime = response.testCaseResults.reduce(0) { $0 + ($1.passed ? 0.2 : 0.5) }
+            }
         }
     }
 }
