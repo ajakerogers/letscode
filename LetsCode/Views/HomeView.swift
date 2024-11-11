@@ -1,4 +1,3 @@
-// HomeView.swift
 import SwiftUI
 
 struct HomeView: View {
@@ -44,15 +43,13 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-
-                NavigationLink(
-                    destination: CodeEditorView(problem: selectedProblem),
-                    isActive: .constant(selectedProblem != nil)
-                ) {
-                    EmptyView()
-                }
             }
             .padding()
+            .navigationDestination(isPresented: .constant(selectedProblem != nil)) {
+                if let problem = selectedProblem {
+                    CodeEditorView(problem: problem)
+                }
+            }
         }
     }
 }

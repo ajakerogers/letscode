@@ -5,6 +5,7 @@ struct CodeEditorView: View {
     let problem: Problem?
     @State private var selectedTestIndex: Int = 0
     
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -17,7 +18,7 @@ struct CodeEditorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-
+                
                 // Code Editor
                 TextEditor(text: $viewModel.code)
                     .font(.system(.body, design: .monospaced))
@@ -114,6 +115,9 @@ struct CodeEditorView: View {
             .padding()
         }
         .navigationTitle("Solve Problem")
+        .onAppear {
+            viewModel.code = problem?.functionBody ?? "Write your code here..."
+        }
     }
 }
 

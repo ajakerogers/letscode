@@ -1,7 +1,7 @@
 import Foundation
 
 class CodeEditorViewModel: ObservableObject {
-    @Published var code: String = "// Write your code here"
+    @Published var code: String = ""
     @Published var output: String = ""
     @Published var isLoading: Bool = false
     @Published var testCases: [TestCase] = []
