@@ -45,17 +45,18 @@ struct HomeView: View {
                 }
             }
             .padding()
-            .navigationDestination(isPresented: .constant(selectedProblem != nil)) {
+            .navigationDestination(isPresented: Binding(
+                get: { selectedProblem != nil },
+                set: { if !$0 { selectedProblem = nil } }
+            )) {
                 if let problem = selectedProblem {
                     CodeEditorView(problem: problem)
                 }
             }
+            .onAppear {
+                // Reset selectedProblem when returning to the HomeView
+                selectedProblem = nil
+            }
         }
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView().environmentObject(AppViewModel())
     }
 }

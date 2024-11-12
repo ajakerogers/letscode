@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DCAF3E342CE305840060325F /* dylib-Info-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCAF3E332CE305840060325F /* dylib-Info-template.plist */; };
+		DCAF3E352CE305B00060325F /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; };
+		DCAF3E362CE305B00060325F /* Python.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DCAF3E372CE305B60060325F /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DC480AA22CDEA4AB00F5E967 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -23,10 +30,46 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DC08C9EB2CE1B45B005D4D4E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC08C9EE2CE1B6F7005D4D4E /* Copy Python Resources */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			name = "Copy Python Resources";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC08C9F72CE2CF66005D4D4E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DCAF3E362CE305B00060325F /* Python.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		DC480A8D2CDEA4AA00F5E967 /* LetsCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LetsCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC480AA12CDEA4AB00F5E967 /* LetsCodeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsCodeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC480AAB2CDEA4AB00F5E967 /* LetsCodeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsCodeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCAF3E312CE305070060325F /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Python.xcframework; sourceTree = "<group>"; };
+		DCAF3E332CE305840060325F /* dylib-Info-template.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "dylib-Info-template.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -65,6 +108,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCAF3E352CE305B00060325F /* Python.xcframework in Frameworks */,
+				DCAF3E372CE305B60060325F /* Python.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,13 +130,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC08C9E82CE1B45B005D4D4E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DCAF3E312CE305070060325F /* Python.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DC480A842CDEA4AA00F5E967 = {
 			isa = PBXGroup;
 			children = (
 				DC480A8F2CDEA4AA00F5E967 /* LetsCode */,
 				DC480AA42CDEA4AB00F5E967 /* LetsCodeTests */,
 				DC480AAE2CDEA4AB00F5E967 /* LetsCodeUITests */,
+				DC08C9E82CE1B45B005D4D4E /* Frameworks */,
 				DC480A8E2CDEA4AA00F5E967 /* Products */,
+				DCAF3E332CE305840060325F /* dylib-Info-template.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,6 +170,9 @@
 				DC480A892CDEA4AA00F5E967 /* Sources */,
 				DC480A8A2CDEA4AA00F5E967 /* Frameworks */,
 				DC480A8B2CDEA4AA00F5E967 /* Resources */,
+				DCAF3E382CE306A10060325F /* Install Target Specific Python Standard Library */,
+				DCAF3E392CE306F00060325F /* Prepare Python Binary Modules */,
+				DC08C9F72CE2CF66005D4D4E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -137,6 +195,8 @@
 				DC480A9D2CDEA4AB00F5E967 /* Sources */,
 				DC480A9E2CDEA4AB00F5E967 /* Frameworks */,
 				DC480A9F2CDEA4AB00F5E967 /* Resources */,
+				DC08C9EB2CE1B45B005D4D4E /* Embed Frameworks */,
+				DC08C9EE2CE1B6F7005D4D4E /* Copy Python Resources */,
 			);
 			buildRules = (
 			);
@@ -225,6 +285,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCAF3E342CE305840060325F /* dylib-Info-template.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,6 +304,47 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DCAF3E382CE306A10060325F /* Install Target Specific Python Standard Library */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Install Target Specific Python Standard Library";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nmkdir -p \"$CODESIGNING_FOLDER_PATH/python/lib\"\nif [ \"$EFFECTIVE_PLATFORM_NAME\" = \"-iphonesimulator\" ]; then\n    echo \"Installing Python modules for iOS Simulator\"\n    rsync -au --delete \"$PROJECT_DIR/Python.xcframework/ios-arm64_x86_64-simulator/lib/\" \"$CODESIGNING_FOLDER_PATH/python/lib/\"\nelse\n    echo \"Installing Python modules for iOS Device\"\n    rsync -au --delete \"$PROJECT_DIR/Python.xcframework/ios-arm64/lib/\" \"$CODESIGNING_FOLDER_PATH/python/lib/\"\nfi\n";
+		};
+		DCAF3E392CE306F00060325F /* Prepare Python Binary Modules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare Python Binary Modules";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# set -e\n\ninstall_dylib () {\n    INSTALL_BASE=$1\n    FULL_EXT=$2\n\n    # Extract module information\n    EXT=$(basename \"$FULL_EXT\")\n    RELATIVE_EXT=${FULL_EXT#$CODESIGNING_FOLDER_PATH/}\n    PYTHON_EXT=${RELATIVE_EXT/$INSTALL_BASE/}\n    FULL_MODULE_NAME=$(echo $PYTHON_EXT | cut -d \".\" -f 1 | tr \"/\" \".\")\n    FRAMEWORK_BUNDLE_ID=$(echo $PRODUCT_BUNDLE_IDENTIFIER.$FULL_MODULE_NAME | tr \"_\" \"-\")\n    FRAMEWORK_FOLDER=\"Frameworks/$FULL_MODULE_NAME.framework\"\n\n    # Create framework structure\n    if [ ! -d \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER\" ]; then\n        echo \"Creating framework for $RELATIVE_EXT\"\n        mkdir -p \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER\"\n        cp \"$CODESIGNING_FOLDER_PATH/dylib-Info-template.plist\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n        plutil -replace CFBundleExecutable -string \"$FULL_MODULE_NAME\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n        plutil -replace CFBundleIdentifier -string \"$FRAMEWORK_BUNDLE_ID\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/Info.plist\"\n    fi\n\n    # Move binary to framework\n    echo \"Installing binary for $FRAMEWORK_FOLDER/$FULL_MODULE_NAME\"\n    mv \"$FULL_EXT\" \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/$FULL_MODULE_NAME\"\n    # Create placeholder file\n    echo \"$FRAMEWORK_FOLDER/$FULL_MODULE_NAME\" > ${FULL_EXT%.so}.fwork\n    # Create origin file\n    echo \"${RELATIVE_EXT%.so}.fwork\" > \"$CODESIGNING_FOLDER_PATH/$FRAMEWORK_FOLDER/$FULL_MODULE_NAME.origin\"\n}\n\nPYTHON_VER=$(ls -1 \"$CODESIGNING_FOLDER_PATH/python/lib\")\necho \"Install Python $PYTHON_VER standard library extension modules...\"\nfind \"$CODESIGNING_FOLDER_PATH/python/lib/$PYTHON_VER/lib-dynload\" -name \"*.so\" | while read FULL_EXT; do\n    install_dylib python/lib/$PYTHON_VER/lib-dynload/ \"$FULL_EXT\"\ndone\n\n# Clean up template\nrm -f \"$CODESIGNING_FOLDER_PATH/dylib-Info-template.plist\"\n\necho \"Signing frameworks as $EXPANDED_CODE_SIGN_IDENTITY_NAME ($EXPANDED_CODE_SIGN_IDENTITY)...\"\nfind \"$CODESIGNING_FOLDER_PATH/Frameworks\" -name \"*.framework\" -exec /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" ${OTHER_CODE_SIGN_FLAGS:-} -o runtime --timestamp=none --preserve-metadata=identifier,entitlements,flags --generate-entitlement-der \"{}\" \\;\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DC480A892CDEA4AA00F5E967 /* Sources */ = {
@@ -287,12 +389,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_ENTITLEMENTS = LetsCode/LetsCode.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LetsCode/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/Python.framework/Headers\"";
 				INFOPLIST_FILE = LetsCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -303,10 +409,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/lib/**",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64/lib/**",
+				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-Wl,-undefined,dynamic_lookup";
 				PRODUCT_BUNDLE_IDENTIFIER = thisissoawesome.LetsCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/LetsCode/LetsCode-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -317,12 +429,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_ENTITLEMENTS = LetsCode/LetsCode.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LetsCode/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/Python.framework/Headers\"";
 				INFOPLIST_FILE = LetsCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -333,10 +450,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/lib/**",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64/lib/**",
+				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-Wl,-undefined,dynamic_lookup";
 				PRODUCT_BUNDLE_IDENTIFIER = thisissoawesome.LetsCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/LetsCode/LetsCode-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -468,8 +591,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_armv7/include/**",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/include/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_armv7/lib",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/lib",
+				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-Wl,-undefined,dynamic_lookup";
 				PRODUCT_BUNDLE_IDENTIFIER = thisissoawesome.LetsCodeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -486,8 +618,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_armv7/include/**",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/include/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_armv7/lib",
+					"$(PROJECT_DIR)/LetsCode/Python.xcframework/ios-arm64_x86_64-simulator/lib",
+				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-Wl,-undefined,dynamic_lookup";
 				PRODUCT_BUNDLE_IDENTIFIER = thisissoawesome.LetsCodeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;

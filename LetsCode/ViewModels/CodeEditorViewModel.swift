@@ -11,17 +11,39 @@ class CodeEditorViewModel: ObservableObject {
     private let codeExecutionService = MockCodeExecutionService()
 
     func runCode(testCases: [TestCase]) {
-        guard !code.isEmpty else { return }
+        guard !code.isEmpty else {
+            output = "Code cannot be empty."
+            return
+        }
+
         isLoading = true
         output = "Running..."
         self.testCases = []
 
-        codeExecutionService.executeCode(code, testCases: testCases) { [weak self] response in
+        // Prepare the user code with necessary boilerplate
+        let codeToExecute = """
+        def user_function(input):
+            \(code)
+        """
+
+        // Execute the user code using the service
+        codeExecutionService.executeCode(codeToExecute, testCases: testCases) { [weak self] response in
             DispatchQueue.main.async {
-                self?.isLoading = false
-                self?.testCases = response.testCaseResults
-                self?.consoleOutput = response.consoleOutput
-                self?.executionTime = response.testCaseResults.reduce(0) { $0 + ($1.passed ? 0.2 : 0.5) }
+                guard let self = self else { return }
+
+                self.isLoading = false
+                self.testCases = response.testCaseResults
+                self.consoleOutput = response.consoleOutput
+
+                // Calculate the total execution time based on test case results
+                self.executionTime = self.testCases.reduce(0.0) { $0 + ($1.passed ? 0.2 : 0.5) }
+
+                // Check if all test cases passed
+                if self.testCases.allSatisfy({ $0.passed }) {
+                    self.output = "All test cases passed!"
+                } else {
+                    self.output = "Some test cases failed."
+                }
             }
         }
     }

@@ -20,16 +20,18 @@ struct CodeEditorView: View {
                 }
                 
                 // Code Editor
-                TextEditor(text: $viewModel.code)
-                    .font(.system(.body, design: .monospaced))
-                    .border(Color.gray.opacity(0.3), width: 1)
-                    .padding()
-                    .frame(height: 300)
-                    .background(Color.white)
-                    .cornerRadius(4)
-                    .autocapitalization(.none) // Disable auto-capitalization
-                    .disableAutocorrection(true) // Disable auto-correction
-
+                ScrollView(.horizontal) {
+                    TextEditor(text: $viewModel.code)
+                        .font(.system(.body, design: .monospaced))
+                        .border(Color.gray.opacity(0.3), width: 1)
+                        .frame(height: 300)
+                        .background(Color.white)
+                        .cornerRadius(4)
+                        .frame(width: calculateWidth(for: viewModel.code))
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                }
+                
                 // Run Code Button
                 Button(action: {
                     viewModel.runCode(testCases: problem?.testCases ?? [])
@@ -119,6 +121,18 @@ struct CodeEditorView: View {
             viewModel.code = problem?.functionBody ?? "Write your code here..."
         }
     }
+    
+    // Helper function to calculate the width based on the content length
+    private func calculateWidth(for text: String) -> CGFloat {
+        let characterWidth: CGFloat = 8.0 // Average width for monospaced font
+        let padding: CGFloat = 40.0 // Additional padding
+        let minWidth = UIScreen.main.bounds.width - 40 // Minimum width based on screen size
+        let maxWidth = UIScreen.main.bounds.width * 2 // Maximum width set to twice the screen width
+
+        // Calculate the estimated width and clamp it between minWidth and maxWidth
+        let estimatedWidth = CGFloat(text.count) * characterWidth + padding
+        return max(min(estimatedWidth, maxWidth), minWidth)
+    }
 }
 
 // Helper View for Code Blocks
@@ -140,3 +154,4 @@ struct CodeBlock: View {
         }
     }
 }
+
