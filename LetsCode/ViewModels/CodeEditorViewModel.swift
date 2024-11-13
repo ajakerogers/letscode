@@ -8,7 +8,7 @@ class CodeEditorViewModel: ObservableObject {
     @Published var consoleOutput: String = ""
     @Published var executionTime: Double = 0.0
 
-    private let codeExecutionService = MockCodeExecutionService()
+    private let codeExecutionService = CodeExecutionService()
 
     func runCode(testCases: [TestCase]) {
         guard !code.isEmpty else {
@@ -20,13 +20,9 @@ class CodeEditorViewModel: ObservableObject {
         output = "Running..."
         self.testCases = []
 
-        // Prepare the user code with necessary boilerplate
-        let codeToExecute = """
-        def user_function(input):
-            \(code)
-        """
+        // Prepare the user code (ensure it defines 'user_function')
+        let codeToExecute = code
 
-        // Execute the user code using the service
         codeExecutionService.executeCode(codeToExecute, testCases: testCases) { [weak self] response in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -34,9 +30,7 @@ class CodeEditorViewModel: ObservableObject {
                 self.isLoading = false
                 self.testCases = response.testCaseResults
                 self.consoleOutput = response.consoleOutput
-
-                // Calculate the total execution time based on test case results
-                self.executionTime = self.testCases.reduce(0.0) { $0 + ($1.passed ? 0.2 : 0.5) }
+                self.executionTime = response.executionTime
 
                 // Check if all test cases passed
                 if self.testCases.allSatisfy({ $0.passed }) {

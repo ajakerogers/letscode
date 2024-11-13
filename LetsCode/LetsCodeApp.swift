@@ -6,7 +6,7 @@ struct LeetCodeAppApp: App {
 
     init() {
         // Initialize PythonRunner
-        _ = PythonRunner.shared
+        PythonRunner.shared.initializePython()
     }
 
     var body: some Scene {
