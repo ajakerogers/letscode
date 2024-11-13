@@ -1,4 +1,3 @@
-// TestCase.swift
 import Foundation
 
 struct TestCase: Identifiable {
@@ -7,5 +6,6 @@ struct TestCase: Identifiable {
     let expectedOutput: String
     var actualOutput: String?
     var functionCall: String?
+    var consoleOutput: String = ""  // New property
     var passed: Bool = false
 }

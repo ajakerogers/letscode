@@ -91,14 +91,14 @@ struct CodeEditorView: View {
                         }
                         
                         // Selected Test Case Details
-                        if !viewModel.testCases.isEmpty  {
+                        if !viewModel.testCases.isEmpty {
                             let testCase = viewModel.testCases[selectedTestIndex]
-                            
+
                             VStack(alignment: .leading, spacing: 8) {
                                 CodeBlock(label: "Input:", content: "\(testCase.input)")
                                 CodeBlock(label: "Expected Output:", content: "\(testCase.expectedOutput)")
                                 CodeBlock(label: "Actual Output:", content: "\(testCase.actualOutput ?? "Not executed")")
-                                CodeBlock(label: "Console Log:", content: viewModel.consoleOutput)
+                                CodeBlock(label: "Console Log:", content: testCase.consoleOutput)  // Display per-test-case console output
                             }
                             .padding()
                             .background(Color(UIColor.systemGray6))
