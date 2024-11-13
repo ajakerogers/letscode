@@ -1,3 +1,4 @@
+// CodeEditorView.swift
 import SwiftUI
 
 struct CodeEditorView: View {
@@ -45,12 +46,12 @@ struct CodeEditorView: View {
                 }
                 .disabled(viewModel.isLoading)
                 .padding()
-
+                
                 // Execution Summary
                 if !viewModel.isLoading && !viewModel.testCases.isEmpty {
                     let allPassed = viewModel.testCases.allSatisfy { $0.passed }
                     let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
-
+                    
                     VStack {
                         HStack {
                             Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
@@ -65,13 +66,13 @@ struct CodeEditorView: View {
                         .cornerRadius(4)
                     }
                     .padding(.horizontal)
-
+                    
                     // Test Results Section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Test Results")
                             .font(.headline)
                             .padding(.leading)
-
+                        
                         // Test Case Selectors
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
@@ -80,7 +81,7 @@ struct CodeEditorView: View {
                                     let passed = testCase.passed
                                     let isSelected = selectedTestIndex == index
                                     let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
-
+                                    
                                     Button(action: {
                                         selectedTestIndex = index
                                     }) {
@@ -94,15 +95,15 @@ struct CodeEditorView: View {
                             }
                             .padding(.horizontal)
                         }
-
+                        
                         // Selected Test Case Details
                         if !viewModel.testCases.isEmpty  {
                             let testCase = viewModel.testCases[selectedTestIndex]
-
+                            
                             VStack(alignment: .leading, spacing: 8) {
-                                CodeBlock(label: "Input:", content: "[\(testCase.input)]")
-                                CodeBlock(label: "Expected Output:", content: "[\(testCase.expectedOutput)]")
-                                CodeBlock(label: "Actual Output:", content: "[\(testCase.actualOutput ?? "Not executed")]")
+                                CodeBlock(label: "Input:", content: "\(testCase.input)")
+                                CodeBlock(label: "Expected Output:", content: "\(testCase.expectedOutput)")
+                                CodeBlock(label: "Actual Output:", content: "\(testCase.actualOutput ?? "Not executed")")
                                 CodeBlock(label: "Console Log:", content: viewModel.consoleOutput)
                             }
                             .padding()
@@ -154,4 +155,3 @@ struct CodeBlock: View {
         }
     }
 }
-

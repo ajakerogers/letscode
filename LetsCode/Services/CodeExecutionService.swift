@@ -1,3 +1,4 @@
+// CodeExecutionService.swift
 import Foundation
 
 class CodeExecutionService {
@@ -10,18 +11,23 @@ class CodeExecutionService {
             for testCase in testCases {
                 var updatedTestCase = testCase
                 let input = testCase.input
+                let functionCall = testCase.functionCall ?? ""
                 
-                if let result = PythonRunner.shared.executeUserCode(code, withInput: input) {
-                    updatedTestCase.actualOutput = result
+                // Combine code with function call for execution
+                let codeToExecute = "\(code)\nresult = \(functionCall)"
+                
+                if let result = PythonRunner.shared.executeUserCode(codeToExecute, withInput: input) {
+                    updatedTestCase.actualOutput = result.output
+                    consoleOutput += result.consoleOutput
                 } else {
                     updatedTestCase.actualOutput = "Error"
+                    consoleOutput += "Error occurred during execution.\n"
                 }
                 
                 updatedTestCases.append(updatedTestCase)
             }
             
             let executionTime = Date().timeIntervalSince(startTime)
-            consoleOutput = ""
             
             let response = CodeExecutionResponse(testCaseResults: updatedTestCases, consoleOutput: consoleOutput, executionTime: executionTime)
             

@@ -1,7 +1,8 @@
+// CodeExecutionResponse.swift
 import Foundation
 
-struct CodeExecutionResponse: Codable {
+struct CodeExecutionResponse {
     let testCaseResults: [TestCase]
     let consoleOutput: String
-    let executionTime: Double
+    let executionTime: TimeInterval
 }

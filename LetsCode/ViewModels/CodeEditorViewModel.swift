@@ -1,44 +1,33 @@
+// CodeEditorViewModel.swift
 import Foundation
 
 class CodeEditorViewModel: ObservableObject {
     @Published var code: String = ""
-    @Published var output: String = ""
     @Published var isLoading: Bool = false
     @Published var testCases: [TestCase] = []
     @Published var consoleOutput: String = ""
-    @Published var executionTime: Double = 0.0
-
+    @Published var executionTime: TimeInterval = 0.0
+    
     private let codeExecutionService = CodeExecutionService()
-
+    
     func runCode(testCases: [TestCase]) {
-        guard !code.isEmpty else {
-            output = "Code cannot be empty."
-            return
-        }
-
+        guard !code.isEmpty else { return }
         isLoading = true
-        output = "Running..."
-        self.testCases = []
-
-        // Prepare the user code (ensure it defines 'user_function')
-        let codeToExecute = code
-
-        codeExecutionService.executeCode(codeToExecute, testCases: testCases) { [weak self] response in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-
-                self.isLoading = false
-                self.testCases = response.testCaseResults
-                self.consoleOutput = response.consoleOutput
-                self.executionTime = response.executionTime
-
-                // Check if all test cases passed
-                if self.testCases.allSatisfy({ $0.passed }) {
-                    self.output = "All test cases passed!"
+        self.testCases = testCases
+        
+        codeExecutionService.executeCode(code, testCases: testCases) { response in
+            self.testCases = response.testCaseResults.map { testCase in
+                var updatedTestCase = testCase
+                if let actualOutput = testCase.actualOutput {
+                    updatedTestCase.passed = actualOutput.trimmingCharacters(in: .whitespacesAndNewlines) == testCase.expectedOutput.trimmingCharacters(in: .whitespacesAndNewlines)
                 } else {
-                    self.output = "Some test cases failed."
+                    updatedTestCase.passed = false
                 }
+                return updatedTestCase
             }
+            self.consoleOutput = response.consoleOutput
+            self.executionTime = response.executionTime
+            self.isLoading = false
         }
     }
 }
