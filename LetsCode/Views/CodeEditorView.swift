@@ -22,15 +22,9 @@ struct CodeEditorView: View {
                 
                 // Code Editor
                 ScrollView(.horizontal) {
-                    TextEditor(text: $viewModel.code)
-                        .font(.system(.body, design: .monospaced))
-                        .border(Color.gray.opacity(0.3), width: 1)
+                    CustomTextEditor(text: $viewModel.code)
                         .frame(height: 300)
-                        .background(Color.white)
-                        .cornerRadius(4)
                         .frame(width: calculateWidth(for: viewModel.code))
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
                 }
                 
                 // Run Code Button

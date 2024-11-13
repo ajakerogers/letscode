@@ -137,7 +137,7 @@ class PythonRunner {
         }
         
         guard let finalResult = result else {
-            return nil
+            return (output: "", consoleOutput: consoleOutput)
         }
         
         return (output: finalResult, consoleOutput: consoleOutput)
@@ -146,12 +146,15 @@ class PythonRunner {
     /// Handles Python errors by fetching and appending the error message to console output.
     private func handlePythonError(prefix: String, consoleOutput: inout String) {
         if PyErr_Occurred() != nil {
-            PyErr_Print()
             var ptype: UnsafeMutablePointer<PyObject>?
             var pvalue: UnsafeMutablePointer<PyObject>?
             var ptraceback: UnsafeMutablePointer<PyObject>?
+
+            // Fetch and normalize the exception before printing
             PyErr_Fetch(&ptype, &pvalue, &ptraceback)
             PyErr_NormalizeException(&ptype, &pvalue, &ptraceback)
+
+            // Process the error message
             if let pvalue = pvalue,
                let errorMessage = PyObject_Str(pvalue),
                let errorCString = PyUnicode_AsUTF8(errorMessage) {
@@ -159,6 +162,12 @@ class PythonRunner {
                 consoleOutput += "\n\(prefix): \(errorString)"
                 Py_DecRef(errorMessage)
             }
+
+            // Optionally, print the error to stderr
+            PyErr_Restore(ptype, pvalue, ptraceback)
+            PyErr_Print()
+
+            // Decrease reference counts
             Py_XDECREF(ptype)
             Py_XDECREF(pvalue)
             Py_XDECREF(ptraceback)
@@ -170,6 +179,7 @@ class PythonRunner {
         if let sysModule = PyImport_ImportModule("sys") {
             if let stdout = PyObject_GetAttrString(sysModule, "stdout"),
                let stderr = PyObject_GetAttrString(sysModule, "stderr") {
+                print("stderr")
                 if let getValueMethod = PyObject_GetAttrString(stdout, "getvalue") {
                     if let stdoutValue = PyObject_CallObject(getValueMethod, nil),
                        let stdoutCString = PyUnicode_AsUTF8(stdoutValue) {
