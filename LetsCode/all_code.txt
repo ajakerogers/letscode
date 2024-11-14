@@ -1,0 +1,842 @@
+\n\n=== ./ViewModels/AppViewModel.swift ===\n
+// AppViewModel.swift
+import Foundation
+
+class AppViewModel: ObservableObject {
+    @Published var problems: [Problem] = []
+    @Published var completedProblems: [Problem] = []
+    @Published var userELO: Int = 1000
+
+    init() {
+        loadProblems()
+    }
+
+    func loadProblems() {
+        problems = [
+            // Easy Problem 1: Two Sum
+            Problem(
+                title: "Two Sum",
+                description: """
+                Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to target.
+                """,
+                difficulty: "Easy",
+                functionBody: """
+                def TwoSum(lst, target):
+                    # Write your function here
+                    return []
+                """,
+                testCases: [
+                    TestCase(input: "2,7,11,15,9", expectedOutput: "[0, 1]", functionCall: "TwoSum([2,7,11,15], 9)"),
+                    TestCase(input: "3,2,4,6", expectedOutput: "[1, 2]", functionCall: "TwoSum([3,2,4], 6)"),
+                    TestCase(input: "3,3,6", expectedOutput: "[0, 1]", functionCall: "TwoSum([3,3], 6)")
+                ]
+            ),
+            // Easy Problem 2: Palindrome Check
+            Problem(
+                title: "Palindrome Check",
+                description: """
+                Write a function that checks if a given string is a palindrome (reads the same backward as forward).
+                """,
+                difficulty: "Easy",
+                functionBody: """
+                def isPalindrome(s):
+                    # Write your function here
+                    return False
+                """,
+                testCases: [
+                    TestCase(input: "racecar", expectedOutput: "True", functionCall: "isPalindrome('racecar')"),
+                    TestCase(input: "hello", expectedOutput: "False", functionCall: "isPalindrome('hello')"),
+                    TestCase(input: "madam", expectedOutput: "True", functionCall: "isPalindrome('madam')")
+                ]
+            ),
+            // Medium Problem 1: Longest Substring Without Repeating Characters
+            Problem(
+                title: "Longest Substring Without Repeating Characters",
+                description: """
+                Given a string `s`, find the length of the longest substring without repeating characters.
+                """,
+                difficulty: "Medium",
+                functionBody: """
+                def lengthOfLongestSubstring(s):
+                    # Write your function here
+                    return 0
+                """,
+                testCases: [
+                    TestCase(input: "abcabcbb", expectedOutput: "3", functionCall: "lengthOfLongestSubstring('abcabcbb')"),
+                    TestCase(input: "bbbbb", expectedOutput: "1", functionCall: "lengthOfLongestSubstring('bbbbb')"),
+                    TestCase(input: "pwwkew", expectedOutput: "3", functionCall: "lengthOfLongestSubstring('pwwkew')")
+                ]
+            ),
+            // Medium Problem 2: Merge Intervals
+            Problem(
+                title: "Merge Intervals",
+                description: """
+                Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals.
+                """,
+                difficulty: "Medium",
+                functionBody: """
+                def merge(intervals):
+                    # Write your function here
+                    return []
+                """,
+                testCases: [
+                    TestCase(input: "[[1,3],[2,6],[8,10],[15,18]]", expectedOutput: "[[1,6],[8,10],[15,18]]", functionCall: "merge([[1,3],[2,6],[8,10],[15,18]])"),
+                    TestCase(input: "[[1,4],[4,5]]", expectedOutput: "[[1,5]]", functionCall: "merge([[1,4],[4,5]])"),
+                    TestCase(input: "[[1,4],[2,3]]", expectedOutput: "[[1,4]]", functionCall: "merge([[1,4],[2,3]])")
+                ]
+            ),
+            // Hard Problem 1: Trapping Rain Water
+            Problem(
+                title: "Trapping Rain Water",
+                description: """
+                Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+                """,
+                difficulty: "Hard",
+                functionBody: """
+                def trap(height):
+                    # Write your function here
+                    return 0
+                """,
+                testCases: [
+                    TestCase(input: "0,1,0,2,1,0,1,3,2,1,2,1", expectedOutput: "6", functionCall: "trap([0,1,0,2,1,0,1,3,2,1,2,1])"),
+                    TestCase(input: "4,2,0,3,2,5", expectedOutput: "9", functionCall: "trap([4,2,0,3,2,5])"),
+                    TestCase(input: "1,0,1", expectedOutput: "1", functionCall: "trap([1,0,1])")
+                ]
+            ),
+            // Hard Problem 2: Median of Two Sorted Arrays
+            Problem(
+                title: "Median of Two Sorted Arrays",
+                description: """
+                Given two sorted arrays `nums1` and `nums2` of size m and n respectively, return the median of the two sorted arrays.
+                """,
+                difficulty: "Hard",
+                functionBody: """
+                def findMedianSortedArrays(nums1, nums2):
+                    # Write your function here
+                    return 0.0
+                """,
+                testCases: [
+                    TestCase(input: "1,3;2", expectedOutput: "2.0", functionCall: "findMedianSortedArrays([1,3], [2])"),
+                    TestCase(input: "1,2;3,4", expectedOutput: "2.5", functionCall: "findMedianSortedArrays([1,2], [3,4])"),
+                    TestCase(input: "0,0;0,0", expectedOutput: "0.0", functionCall: "findMedianSortedArrays([0,0], [0,0])")
+                ]
+            )
+        ]
+    }
+
+    func getRandomProblem(difficulty: String) -> Problem? {
+        let filtered = problems.filter { $0.difficulty == difficulty }
+        return filtered.randomElement()
+    }
+}
+\n\n=== ./ViewModels/CodeEditorViewModel.swift ===\n
+// CodeEditorViewModel.swift
+import Foundation
+
+class CodeEditorViewModel: ObservableObject {
+    @Published var code: String = ""
+    @Published var isLoading: Bool = false
+    @Published var testCases: [TestCase] = []
+    @Published var consoleOutput: String = ""
+    @Published var executionTime: TimeInterval = 0.0
+
+    private let codeExecutionService = CodeExecutionService()
+
+    func runCode(testCases: [TestCase]) {
+        guard !code.isEmpty else { return }
+        isLoading = true
+        self.testCases = testCases
+
+        codeExecutionService.executeCode(code, testCases: testCases) { response in
+            self.testCases = response.testCaseResults.map { testCase in
+                var updatedTestCase = testCase
+                if let actualOutput = testCase.actualOutput {
+                    updatedTestCase.passed = actualOutput.trimmingCharacters(in: .whitespacesAndNewlines) == testCase.expectedOutput.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    updatedTestCase.passed = false
+                }
+                return updatedTestCase
+            }
+            self.executionTime = response.executionTime
+            self.isLoading = false
+        }
+    }
+
+    func getConsoleOutput(for index: Int) -> String {
+        return testCases.indices.contains(index) ? testCases[index].consoleOutput : ""
+    }
+}
+\n\n=== ./Item.swift ===\n
+//
+//  Item.swift
+//  LetsCode
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import Foundation
+import SwiftData
+
+@Model
+final class Item {
+    var timestamp: Date
+    
+    init(timestamp: Date) {
+        self.timestamp = timestamp
+    }
+}
+\n\n=== ./Models/Problem.swift ===\n
+// Problem.swift
+import Foundation
+
+struct Problem: Identifiable {
+    let id = UUID()
+    let title: String
+    let description: String
+    let difficulty: String
+    let functionBody: String
+    let testCases: [TestCase]
+}
+\n\n=== ./Models/TestCase.swift ===\n
+import Foundation
+
+struct TestCase: Identifiable {
+    let id = UUID()
+    let input: String
+    let expectedOutput: String
+    var actualOutput: String?
+    var functionCall: String?
+    var consoleOutput: String = ""  // New property
+    var passed: Bool = false
+}
+\n\n=== ./Models/CodeExecutionResponse.swift ===\n
+// CodeExecutionResponse.swift
+import Foundation
+
+struct CodeExecutionResponse {
+    let testCaseResults: [TestCase]
+    let executionTime: TimeInterval
+}
+\n\n=== ./LetsCodeApp.swift ===\n
+import SwiftUI
+
+@main
+struct LeetCodeAppApp: App {
+    @StateObject private var viewModel = AppViewModel()
+
+    init() {
+        // Initialize PythonRunner
+        PythonRunner.shared.initializePython()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            HomeView().environmentObject(viewModel)
+        }
+    }
+}
+\n\n=== ./Views/CodeEditorView.swift ===\n
+// CodeEditorView.swift
+import SwiftUI
+
+struct CodeEditorView: View {
+    @StateObject private var viewModel = CodeEditorViewModel()
+    let problem: Problem?
+    @State private var selectedTestIndex: Int = 0
+    
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                // Problem Title and Description
+                if let problem = problem {
+                    Text(problem.title)
+                        .font(.title)
+                        .bold()
+                    Text(problem.description)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                
+                // Code Editor
+                ScrollView(.horizontal) {
+                    CustomTextEditor(text: $viewModel.code)
+                        .frame(height: 300)
+                        .frame(width: calculateWidth(for: viewModel.code))
+                }
+                
+                // Run Code Button
+                Button(action: {
+                    viewModel.runCode(testCases: problem?.testCases ?? [])
+                }) {
+                    Text(viewModel.isLoading ? "Running..." : "Run Code")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(viewModel.isLoading ? Color.gray : Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(4)
+                }
+                .disabled(viewModel.isLoading)
+                .padding()
+                
+                // Execution Summary
+                if !viewModel.isLoading && !viewModel.testCases.isEmpty {
+                    let allPassed = viewModel.testCases.allSatisfy { $0.passed }
+                    let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
+                    
+                    VStack {
+                        HStack {
+                            Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
+                                .foregroundColor(allPassed ? .green : .red)
+                                .font(.headline)
+                            Spacer()
+                            Text("Execution Time: \(viewModel.executionTime, specifier: "%.2f")s")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(15)
+                        .background(summaryColor)
+                        .cornerRadius(4)
+                    }
+                    .padding(.horizontal)
+                    
+                    // Test Results Section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Test Results")
+                            .font(.headline)
+                            .padding(.leading)
+                        
+                        // Test Case Selectors
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(viewModel.testCases.indices, id: \.self) { index in
+                                    let testCase = viewModel.testCases[index]
+                                    let passed = testCase.passed
+                                    let isSelected = selectedTestIndex == index
+                                    let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
+                                    
+                                    Button(action: {
+                                        selectedTestIndex = index
+                                    }) {
+                                        Text("Case \(index + 1)")
+                                            .padding(8)
+                                            .background(buttonColor)
+                                            .foregroundColor(isSelected ? .white : (passed ? .green : .red))
+                                            .cornerRadius(4)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        // Selected Test Case Details
+                        if !viewModel.testCases.isEmpty {
+                            let testCase = viewModel.testCases[selectedTestIndex]
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                CodeBlock(label: "Input:", content: "\(testCase.input)")
+                                CodeBlock(label: "Expected Output:", content: "\(testCase.expectedOutput)")
+                                CodeBlock(label: "Actual Output:", content: "\(testCase.actualOutput ?? "Not executed")")
+                                CodeBlock(label: "Console Log:", content: testCase.consoleOutput)  // Display per-test-case console output
+                            }
+                            .padding()
+                            .background(Color(UIColor.systemGray6))
+                            .cornerRadius(4)
+                            .padding(.horizontal)
+                        }
+                    }
+                    .padding(.top)
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Solve Problem")
+        .onAppear {
+            viewModel.code = problem?.functionBody ?? "Write your code here..."
+        }
+    }
+    
+    // Helper function to calculate the width based on the content length
+    private func calculateWidth(for text: String) -> CGFloat {
+        let characterWidth: CGFloat = 8.0 // Average width for monospaced font
+        let padding: CGFloat = 40.0 // Additional padding
+        let minWidth = UIScreen.main.bounds.width - 40 // Minimum width based on screen size
+        let maxWidth = UIScreen.main.bounds.width * 2 // Maximum width set to twice the screen width
+
+        // Calculate the estimated width and clamp it between minWidth and maxWidth
+        let estimatedWidth = CGFloat(text.count) * characterWidth + padding
+        return max(min(estimatedWidth, maxWidth), minWidth)
+    }
+}
+
+// Helper View for Code Blocks
+struct CodeBlock: View {
+    let label: String
+    let content: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.body)
+                .bold()
+            Text(content)
+                .font(.system(.body, design: .monospaced))
+                .padding(8)
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+\n\n=== ./Views/ProfileView.swift ===\n
+//
+//  ProfileView.swift
+//  LetsCode
+//
+//  Created by Jake Rogers on 11/10/24.
+//
+
+\n\n=== ./Views/CustomCodeEditor.swift ===\n
+// CustomTextEditor.swift
+import SwiftUI
+
+struct CustomTextEditor: UIViewRepresentable {
+    @Binding var text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+
+        textView.delegate = context.coordinator
+        textView.isEditable = true
+        textView.isSelectable = true
+
+        // Disable smart quotes and other automatic text features
+        textView.autocapitalizationType = .none
+        textView.autocorrectionType = .no
+        textView.smartQuotesType = .no
+        textView.smartDashesType = .no
+        textView.spellCheckingType = .no
+
+        textView.font = UIFont.monospacedSystemFont(ofSize: UIFont.systemFontSize, weight: .regular)
+        textView.backgroundColor = UIColor.white
+        textView.layer.cornerRadius = 4
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.gray.withAlphaComponent(0.3).cgColor
+
+        return textView
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        if uiView.text != self.text {
+            uiView.text = self.text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UITextViewDelegate {
+        var parent: CustomTextEditor
+
+        init(_ parent: CustomTextEditor) {
+            self.parent = parent
+        }
+
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+        }
+
+        // Implement auto-indentation
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            if text == "\n" {
+                let nsText = textView.text as NSString
+                let currentLineRange = nsText.lineRange(for: NSRange(location: range.location, length: 0))
+                let currentLine = nsText.substring(with: currentLineRange)
+                let leadingWhitespace = currentLine.prefix(while: { $0 == " " || $0 == "\t" })
+                let insertion = "\n" + leadingWhitespace
+                textView.replace(range, withText: insertion)
+                return false
+            }
+            return true
+        }
+    }
+}
+
+extension UITextView {
+    func replace(_ range: NSRange, withText text: String) {
+        if let textRange = self.textRange(from: self.position(from: self.beginningOfDocument, offset: range.location)!,
+                                          to: self.position(from: self.beginningOfDocument, offset: NSMaxRange(range))!) {
+            self.replace(textRange, withText: text)
+        }
+    }
+}
+\n\n=== ./Views/HomeView.swift ===\n
+import SwiftUI
+
+struct HomeView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+    @State private var selectedProblem: Problem?
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("LetsCode")
+                    .font(.largeTitle)
+                    .bold()
+
+                Button(action: {
+                    selectedProblem = viewModel.getRandomProblem(difficulty: "Easy")
+                }) {
+                    Text("Easy")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+
+                Button(action: {
+                    selectedProblem = viewModel.getRandomProblem(difficulty: "Medium")
+                }) {
+                    Text("Medium")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+
+                Button(action: {
+                    selectedProblem = viewModel.getRandomProblem(difficulty: "Hard")
+                }) {
+                    Text("Hard")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }
+            .padding()
+            .navigationDestination(isPresented: Binding(
+                get: { selectedProblem != nil },
+                set: { if !$0 { selectedProblem = nil } }
+            )) {
+                if let problem = selectedProblem {
+                    CodeEditorView(problem: problem)
+                }
+            }
+            .onAppear {
+                // Reset selectedProblem when returning to the HomeView
+                selectedProblem = nil
+            }
+        }
+    }
+}
+\n\n=== ./ContentView.swift ===\n
+//
+//  ContentView.swift
+//  LetsCode
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import SwiftUI
+import SwiftData
+
+struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var items: [Item]
+
+    var body: some View {
+        NavigationSplitView {
+            List {
+                ForEach(items) { item in
+                    NavigationLink {
+                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                    } label: {
+                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                    }
+                }
+                .onDelete(perform: deleteItems)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    EditButton()
+                }
+                ToolbarItem {
+                    Button(action: addItem) {
+                        Label("Add Item", systemImage: "plus")
+                    }
+                }
+            }
+        } detail: {
+            Text("Select an item")
+        }
+    }
+
+    private func addItem() {
+        withAnimation {
+            let newItem = Item(timestamp: Date())
+            modelContext.insert(newItem)
+        }
+    }
+
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                modelContext.delete(items[index])
+            }
+        }
+    }
+}
+
+#Preview {
+    ContentView()
+        .modelContainer(for: Item.self, inMemory: true)
+}
+\n\n=== ./Services/CodeExecutionService.swift ===\n
+// CodeExecutionService.swift
+import Foundation
+
+class CodeExecutionService {
+    func executeCode(_ code: String, testCases: [TestCase], completion: @escaping (CodeExecutionResponse) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            var updatedTestCases = [TestCase]()
+            let startTime = Date()
+
+            for testCase in testCases {
+                var updatedTestCase = testCase
+                let input = testCase.input
+                let functionCall = testCase.functionCall ?? ""
+
+                // Combine code with function call for execution
+                let codeToExecute = "\(code)\nresult = \(functionCall)"
+
+                // Execute user code and capture result
+                if let result = PythonRunner.shared.executeUserCode(codeToExecute, withInput: input) {
+                    updatedTestCase.actualOutput = result.output
+                    updatedTestCase.consoleOutput = result.consoleOutput  // Store console output per test case
+                } else {
+                    updatedTestCase.actualOutput = "Error"
+                    updatedTestCase.consoleOutput = "Error occurred during execution.\n"
+                }
+
+                updatedTestCases.append(updatedTestCase)
+            }
+
+            let executionTime = Date().timeIntervalSince(startTime)
+            let response = CodeExecutionResponse(testCaseResults: updatedTestCases, executionTime: executionTime)
+
+            DispatchQueue.main.async {
+                completion(response)
+            }
+        }
+    }
+}
+\n\n=== ./Services/PythonRunner.swift ===\n
+// PythonRunner.swift
+import Foundation
+
+class PythonRunner {
+    static let shared = PythonRunner()
+    private var mainThreadState: UnsafeMutablePointer<PyThreadState>?
+    
+    private init() {
+        // Initialization should be called from the main thread in your AppDelegate or @main struct
+    }
+    
+    /// Initializes the Python interpreter with the necessary configuration.
+    func initializePython() {
+        // Ensure this is called on the main thread
+        assert(Thread.isMainThread, "initializePython must be called on the main thread")
+        
+        var config = PyConfig()
+        PyConfig_InitPythonConfig(&config)
+        
+        // Set program name (optional but recommended)
+        if let programName = Bundle.main.executablePath {
+            programName.withCString { cString in
+                withUnsafeMutablePointer(to: &config) { configPtr in
+                    PyConfig_SetBytesString(configPtr, &configPtr.pointee.program_name, cString)
+                }
+            }
+        }
+        
+        // Set PYTHONHOME
+        if let resourcePath = Bundle.main.resourcePath {
+            let pythonHome = "\(resourcePath)/python"
+            pythonHome.withCString { cString in
+                withUnsafeMutablePointer(to: &config) { configPtr in
+                    PyConfig_SetBytesString(configPtr, &configPtr.pointee.home, cString)
+                }
+            }
+        }
+        
+        // Initialize the Python interpreter
+        withUnsafeMutablePointer(to: &config) { configPtr in
+            let status = Py_InitializeFromConfig(configPtr)
+            PyConfig_Clear(configPtr)
+            if PyStatus_Exception(status) != 0 {
+                Py_ExitStatusException(status)
+            }
+        }
+        print("Python Initialized")
+        
+        // Save the main thread state and release the GIL
+        mainThreadState = PyEval_SaveThread()
+    }
+    
+    /// Executes the user-provided Python code with the given input.
+    /// - Parameters:
+    ///   - code: The user's Python code as a string.
+    ///   - input: The input to pass to the user's function.
+    /// - Returns: A tuple containing the output from the user's function and console output, or `nil` if execution failed.
+    func executeUserCode(_ code: String, withInput input: String) -> (output: String, consoleOutput: String)? {
+        // Ensure the Python interpreter is initialized
+        guard mainThreadState != nil else {
+            print("Python interpreter is not initialized.")
+            return nil
+        }
+        
+        var result: String? = nil
+        var consoleOutput = ""
+        
+        // Run the code on a background thread to avoid blocking the main thread
+        let executionQueue = DispatchQueue(label: "PythonExecutionQueue")
+        executionQueue.sync {
+            // Acquire the GIL
+            PyEval_RestoreThread(mainThreadState)
+            
+            defer {
+                // Release the GIL and save the thread state
+                mainThreadState = PyEval_SaveThread()
+            }
+            
+            // Prepare the code to execute
+            let fullCode = """
+            import sys
+            import io
+            sys.stdout = io.StringIO()
+            sys.stderr = io.StringIO()
+            
+            \(code)
+            """
+            
+            // Ensure the code is in UTF8 format
+            guard let codeCString = fullCode.cString(using: .utf8) else {
+                print("Failed to convert code to C string.")
+                return
+            }
+            
+            // Create a new main module
+            guard let mainModule = PyImport_AddModule("__main__") else {
+                print("Failed to import __main__ module.")
+                return
+            }
+            Py_IncRef(mainModule)
+            
+            guard let globals = PyModule_GetDict(mainModule) else {
+                print("Failed to get globals from __main__ module.")
+                Py_DecRef(mainModule)
+                return
+            }
+            
+            // Compile the user's code
+            guard let compiledCode = Py_CompileString(codeCString, "<string>", Py_file_input) else {
+                handlePythonError(prefix: "Syntax Error", consoleOutput: &consoleOutput)
+                Py_DecRef(mainModule)
+                return
+            }
+            
+            // Execute the compiled code
+            if let pyResult = PyEval_EvalCode(compiledCode, globals, globals) {
+                // Fetch the 'result' variable from the Python globals
+                if let resultObject = PyDict_GetItemString(globals, "result") {
+                    if let resultStr = PyObject_Str(resultObject),
+                       let resultCString = PyUnicode_AsUTF8(resultStr) {
+                        result = String(cString: resultCString)
+                        Py_DecRef(resultStr)
+                    }
+                }
+            } else {
+                handlePythonError(prefix: "Runtime Error", consoleOutput: &consoleOutput)
+                Py_DecRef(compiledCode)
+                Py_DecRef(mainModule)
+                return
+            }
+            Py_DecRef(compiledCode)
+            
+            // Capture console output
+            captureConsoleOutput(&consoleOutput)
+            
+            Py_DecRef(mainModule)
+        }
+        
+        guard let finalResult = result else {
+            return (output: "", consoleOutput: consoleOutput)
+        }
+        
+        return (output: finalResult, consoleOutput: consoleOutput)
+    }
+    
+    /// Handles Python errors by fetching and appending the error message to console output.
+    private func handlePythonError(prefix: String, consoleOutput: inout String) {
+        if PyErr_Occurred() != nil {
+            var ptype: UnsafeMutablePointer<PyObject>?
+            var pvalue: UnsafeMutablePointer<PyObject>?
+            var ptraceback: UnsafeMutablePointer<PyObject>?
+
+            // Fetch and normalize the exception before printing
+            PyErr_Fetch(&ptype, &pvalue, &ptraceback)
+            PyErr_NormalizeException(&ptype, &pvalue, &ptraceback)
+
+            // Process the error message
+            if let pvalue = pvalue,
+               let errorMessage = PyObject_Str(pvalue),
+               let errorCString = PyUnicode_AsUTF8(errorMessage) {
+                let errorString = String(cString: errorCString)
+                consoleOutput += "\n\(prefix): \(errorString)"
+                Py_DecRef(errorMessage)
+            }
+
+            // Optionally, print the error to stderr
+            PyErr_Restore(ptype, pvalue, ptraceback)
+            PyErr_Print()
+
+            // Decrease reference counts
+            Py_XDECREF(ptype)
+            Py_XDECREF(pvalue)
+            Py_XDECREF(ptraceback)
+        }
+    }
+    
+    /// Captures the console output from Python's stdout and stderr.
+    private func captureConsoleOutput(_ consoleOutput: inout String) {
+        if let sysModule = PyImport_ImportModule("sys") {
+            if let stdout = PyObject_GetAttrString(sysModule, "stdout"),
+               let stderr = PyObject_GetAttrString(sysModule, "stderr") {
+                print("stderr")
+                if let getValueMethod = PyObject_GetAttrString(stdout, "getvalue") {
+                    if let stdoutValue = PyObject_CallObject(getValueMethod, nil),
+                       let stdoutCString = PyUnicode_AsUTF8(stdoutValue) {
+                        consoleOutput += String(cString: stdoutCString)
+                        Py_DecRef(stdoutValue)
+                    }
+                    Py_DecRef(getValueMethod)
+                }
+                if let getValueMethodErr = PyObject_GetAttrString(stderr, "getvalue") {
+                    if let stderrValue = PyObject_CallObject(getValueMethodErr, nil),
+                       let stderrCString = PyUnicode_AsUTF8(stderrValue) {
+                        consoleOutput += String(cString: stderrCString)
+                        Py_DecRef(stderrValue)
+                    }
+                    Py_DecRef(getValueMethodErr)
+                }
+                Py_DecRef(stdout)
+                Py_DecRef(stderr)
+            }
+            Py_DecRef(sysModule)
+        }
+    }
+}
