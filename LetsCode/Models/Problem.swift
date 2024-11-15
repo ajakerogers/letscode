@@ -1,11 +1,13 @@
-// Problem.swift
 import Foundation
 
-struct Problem: Identifiable, Decodable {
+struct Problem: Identifiable, Codable {
     let id: String
     let title: String
     let description: String
     let difficulty: String
     let functionBody: String
+    let solved: Bool
+    let solution: String?
+    let attempts: Int
     let testCases: [TestCase]
 }

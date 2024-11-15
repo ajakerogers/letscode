@@ -233,6 +233,9 @@ class DatabaseManager {
                     description: problemRow[description],
                     difficulty: problemRow[difficulty],
                     functionBody: problemRow[functionBody],
+                    solved: problemRow[solved],
+                    solution: problemRow[solution],
+                    attempts: problemRow[attempts],
                     testCases: []
                 )
             }
@@ -253,6 +256,9 @@ class DatabaseManager {
                     description: row[description],
                     difficulty: row[difficulty],
                     functionBody: row[functionBody],
+                    solved: row[solved],
+                    solution: row[solution],
+                    attempts: row[attempts],
                     testCases: []
                 )
                 problemList.append(problem)
