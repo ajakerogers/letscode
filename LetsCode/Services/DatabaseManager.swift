@@ -37,6 +37,7 @@ class DatabaseManager {
     private let expectedOutput = SQLiteExpression<String>("expectedOutput")
     private let actualOutput = SQLiteExpression<String?>("actualOutput")
     private let passed = SQLiteExpression<Bool>("passed")
+    private let consoleOutput = SQLiteExpression<String>("consoleOutput")
 
     private init() {
         // Initialize the SQLite database
@@ -86,6 +87,7 @@ class DatabaseManager {
                 table.column(expectedOutput)
                 table.column(functionCall)
                 table.column(actualOutput)
+                table.column(consoleOutput)
                 table.column(passed, defaultValue: false)
                 table.foreignKey(problemIdFK, references: problems, problemId)
             })
@@ -120,6 +122,7 @@ class DatabaseManager {
                             input <- testCase.input,
                             functionCall <- testCase.functionCall,
                             expectedOutput <- testCase.expectedOutput,
+                            consoleOutput <- "",
                             actualOutput <- nil,
                             passed <- false
                         ))
@@ -157,6 +160,22 @@ class DatabaseManager {
             print("Error initializing database: \(error)")
         }
     }
+    
+//    func deleteDatabase() {
+//        do {
+//            let documentDirectory = try FileManager.default.url(
+//                for: .documentDirectory,
+//                in: .userDomainMask,
+//                appropriateFor: nil,
+//                create: false
+//            )
+//            let dbPath = documentDirectory.appendingPathComponent("letscode.sqlite3").path
+//            try FileManager.default.removeItem(atPath: dbPath)
+//            print("Database file deleted successfully.")
+//        } catch {
+//            print("Failed to delete database file: \(error)")
+//        }
+//    }
 
     // User Management
     func createUser(username: String) {
@@ -226,7 +245,13 @@ class DatabaseManager {
     // Fetch Problems
     func getUnsolvedProblem(targetDifficulty: String) -> Problem? {
         do {
+            // Query for the first unsolved problem with the specified difficulty
             if let problemRow = try db?.pluck(problems.filter(difficulty == targetDifficulty && solved == false)) {
+                
+                // Fetch associated test cases for the problem
+                let associatedTestCases = try fetchTestCases(for: problemRow[problemId])
+                
+                // Create and return the Problem object with populated testCases
                 return Problem(
                     id: problemRow[problemId],
                     title: problemRow[title],
@@ -236,7 +261,7 @@ class DatabaseManager {
                     solved: problemRow[solved],
                     solution: problemRow[solution],
                     attempts: problemRow[attempts],
-                    testCases: []
+                    testCases: associatedTestCases
                 )
             }
         } catch {
@@ -267,5 +292,29 @@ class DatabaseManager {
             print("Failed to fetch attempted problems: \(error)")
         }
         return problemList
+    }
+    
+    // Helper Method to Fetch Test Cases for a Given Problem ID
+    private func fetchTestCases(for problemIdValue: String) throws -> [TestCase] {
+        var testCasesList = [TestCase]()
+        
+        // Define the query to filter test cases by problemIdFK
+        let query = testCases.filter(problemIdFK == problemIdValue)
+        
+        // Iterate through the filtered test cases
+        for testCaseRow in try db!.prepare(query) {
+            let testCase = TestCase(
+                id: testCaseRow[testCaseId],
+                input: testCaseRow[input],
+                expectedOutput: testCaseRow[expectedOutput],
+                actualOutput: testCaseRow[actualOutput],
+                functionCall: testCaseRow[functionCall],
+                consoleOutput: testCaseRow[consoleOutput],
+                passed: testCaseRow[passed]
+            )
+            testCasesList.append(testCase)
+        }
+        
+        return testCasesList
     }
 }
