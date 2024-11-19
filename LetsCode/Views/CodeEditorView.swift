@@ -5,8 +5,8 @@ struct CodeEditorView: View {
     @StateObject private var viewModel = CodeEditorViewModel()
     let problem: Problem?
     @State private var selectedTestIndex: Int = 0
-    
-    
+    @EnvironmentObject var appViewModel: AppViewModel
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -19,17 +19,18 @@ struct CodeEditorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-                
+
                 // Code Editor
                 ScrollView(.horizontal) {
                     CustomTextEditor(text: $viewModel.code)
                         .frame(height: 300)
                         .frame(width: calculateWidth(for: viewModel.code))
                 }
-                
+
                 // Run Code Button
                 Button(action: {
-                    viewModel.runCode(testCases: problem?.testCases ?? [])
+                    guard let problem = problem else { return }
+                    viewModel.runCode(problem: problem)
                 }) {
                     Text(viewModel.isLoading ? "Running..." : "Run Code")
                         .padding()
@@ -40,12 +41,12 @@ struct CodeEditorView: View {
                 }
                 .disabled(viewModel.isLoading)
                 .padding()
-                
+
                 // Execution Summary
                 if !viewModel.isLoading && !viewModel.testCases.isEmpty {
                     let allPassed = viewModel.testCases.allSatisfy { $0.passed }
                     let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
-                    
+
                     VStack {
                         HStack {
                             Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
@@ -60,13 +61,13 @@ struct CodeEditorView: View {
                         .cornerRadius(4)
                     }
                     .padding(.horizontal)
-                    
+
                     // Test Results Section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Test Results")
                             .font(.headline)
                             .padding(.leading)
-                        
+
                         // Test Case Selectors
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
@@ -75,7 +76,7 @@ struct CodeEditorView: View {
                                     let passed = testCase.passed
                                     let isSelected = selectedTestIndex == index
                                     let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
-                                    
+
                                     Button(action: {
                                         selectedTestIndex = index
                                     }) {
@@ -89,7 +90,7 @@ struct CodeEditorView: View {
                             }
                             .padding(.horizontal)
                         }
-                        
+
                         // Selected Test Case Details
                         if !viewModel.testCases.isEmpty {
                             let testCase = viewModel.testCases[selectedTestIndex]
@@ -112,11 +113,14 @@ struct CodeEditorView: View {
             .padding()
         }
         .navigationTitle("Solve Problem")
+        .alert(isPresented: $viewModel.showEloAlert) {
+            Alert(title: Text("ELO Update"), message: Text(viewModel.eloAlertMessage), dismissButton: .default(Text("OK")))
+        }
         .onAppear {
             viewModel.code = problem?.functionBody ?? "Write your code here..."
         }
     }
-    
+
     // Helper function to calculate the width based on the content length
     private func calculateWidth(for text: String) -> CGFloat {
         let characterWidth: CGFloat = 8.0 // Average width for monospaced font

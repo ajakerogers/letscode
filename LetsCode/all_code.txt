@@ -1,132 +1,42 @@
 \n\n=== ./ViewModels/AppViewModel.swift ===\n
-// AppViewModel.swift
 import Foundation
 
 class AppViewModel: ObservableObject {
     @Published var problems: [Problem] = []
     @Published var completedProblems: [Problem] = []
     @Published var userELO: Int = 1000
+    private let db = DatabaseManager.shared
+    private let username = "Jake"  // Temporary username for demo
+    private let eloService = ELOCalculationService()
 
     init() {
+        userELO = db.getUserELO(username: username) ?? 1000
         loadProblems()
     }
 
     func loadProblems() {
-        problems = [
-            // Easy Problem 1: Two Sum
-            Problem(
-                title: "Two Sum",
-                description: """
-                Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to target.
-                """,
-                difficulty: "Easy",
-                functionBody: """
-                def TwoSum(lst, target):
-                    # Write your function here
-                    return []
-                """,
-                testCases: [
-                    TestCase(input: "2,7,11,15,9", expectedOutput: "[0, 1]", functionCall: "TwoSum([2,7,11,15], 9)"),
-                    TestCase(input: "3,2,4,6", expectedOutput: "[1, 2]", functionCall: "TwoSum([3,2,4], 6)"),
-                    TestCase(input: "3,3,6", expectedOutput: "[0, 1]", functionCall: "TwoSum([3,3], 6)")
-                ]
-            ),
-            // Easy Problem 2: Palindrome Check
-            Problem(
-                title: "Palindrome Check",
-                description: """
-                Write a function that checks if a given string is a palindrome (reads the same backward as forward).
-                """,
-                difficulty: "Easy",
-                functionBody: """
-                def isPalindrome(s):
-                    # Write your function here
-                    return False
-                """,
-                testCases: [
-                    TestCase(input: "racecar", expectedOutput: "True", functionCall: "isPalindrome('racecar')"),
-                    TestCase(input: "hello", expectedOutput: "False", functionCall: "isPalindrome('hello')"),
-                    TestCase(input: "madam", expectedOutput: "True", functionCall: "isPalindrome('madam')")
-                ]
-            ),
-            // Medium Problem 1: Longest Substring Without Repeating Characters
-            Problem(
-                title: "Longest Substring Without Repeating Characters",
-                description: """
-                Given a string `s`, find the length of the longest substring without repeating characters.
-                """,
-                difficulty: "Medium",
-                functionBody: """
-                def lengthOfLongestSubstring(s):
-                    # Write your function here
-                    return 0
-                """,
-                testCases: [
-                    TestCase(input: "abcabcbb", expectedOutput: "3", functionCall: "lengthOfLongestSubstring('abcabcbb')"),
-                    TestCase(input: "bbbbb", expectedOutput: "1", functionCall: "lengthOfLongestSubstring('bbbbb')"),
-                    TestCase(input: "pwwkew", expectedOutput: "3", functionCall: "lengthOfLongestSubstring('pwwkew')")
-                ]
-            ),
-            // Medium Problem 2: Merge Intervals
-            Problem(
-                title: "Merge Intervals",
-                description: """
-                Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals.
-                """,
-                difficulty: "Medium",
-                functionBody: """
-                def merge(intervals):
-                    # Write your function here
-                    return []
-                """,
-                testCases: [
-                    TestCase(input: "[[1,3],[2,6],[8,10],[15,18]]", expectedOutput: "[[1,6],[8,10],[15,18]]", functionCall: "merge([[1,3],[2,6],[8,10],[15,18]])"),
-                    TestCase(input: "[[1,4],[4,5]]", expectedOutput: "[[1,5]]", functionCall: "merge([[1,4],[4,5]])"),
-                    TestCase(input: "[[1,4],[2,3]]", expectedOutput: "[[1,4]]", functionCall: "merge([[1,4],[2,3]])")
-                ]
-            ),
-            // Hard Problem 1: Trapping Rain Water
-            Problem(
-                title: "Trapping Rain Water",
-                description: """
-                Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
-                """,
-                difficulty: "Hard",
-                functionBody: """
-                def trap(height):
-                    # Write your function here
-                    return 0
-                """,
-                testCases: [
-                    TestCase(input: "0,1,0,2,1,0,1,3,2,1,2,1", expectedOutput: "6", functionCall: "trap([0,1,0,2,1,0,1,3,2,1,2,1])"),
-                    TestCase(input: "4,2,0,3,2,5", expectedOutput: "9", functionCall: "trap([4,2,0,3,2,5])"),
-                    TestCase(input: "1,0,1", expectedOutput: "1", functionCall: "trap([1,0,1])")
-                ]
-            ),
-            // Hard Problem 2: Median of Two Sorted Arrays
-            Problem(
-                title: "Median of Two Sorted Arrays",
-                description: """
-                Given two sorted arrays `nums1` and `nums2` of size m and n respectively, return the median of the two sorted arrays.
-                """,
-                difficulty: "Hard",
-                functionBody: """
-                def findMedianSortedArrays(nums1, nums2):
-                    # Write your function here
-                    return 0.0
-                """,
-                testCases: [
-                    TestCase(input: "1,3;2", expectedOutput: "2.0", functionCall: "findMedianSortedArrays([1,3], [2])"),
-                    TestCase(input: "1,2;3,4", expectedOutput: "2.5", functionCall: "findMedianSortedArrays([1,2], [3,4])"),
-                    TestCase(input: "0,0;0,0", expectedOutput: "0.0", functionCall: "findMedianSortedArrays([0,0], [0,0])")
-                ]
-            )
-        ]
+        problems = db.getSolvedProblems()
     }
 
     func getRandomProblem(difficulty: String) -> Problem? {
-        let filtered = problems.filter { $0.difficulty == difficulty }
-        return filtered.randomElement()
+        return db.getUnsolvedProblem(targetDifficulty: difficulty)
+    }
+
+    // Update ELO based on success or failure
+    func updateELO(success: Bool, problemDifficulty: String) {
+        let eloChange = eloService.calculateELOChange(userELO: userELO, success: success, problemDifficulty: problemDifficulty)
+        userELO += eloChange
+        db.updateUserELO(username: username, newELO: userELO)
+    }
+
+    // Handle successful problem solving
+    func handleSuccess(problem: Problem) {
+        updateELO(success: true, problemDifficulty: problem.difficulty)
+    }
+
+    // Handle failed problem solving
+    func handleFailure(problem: Problem) {
+        updateELO(success: false, problemDifficulty: problem.difficulty)
     }
 }
 \n\n=== ./ViewModels/CodeEditorViewModel.swift ===\n
@@ -139,15 +49,23 @@ class CodeEditorViewModel: ObservableObject {
     @Published var testCases: [TestCase] = []
     @Published var consoleOutput: String = ""
     @Published var executionTime: TimeInterval = 0.0
+    @Published var showEloAlert: Bool = false
+    @Published var eloAlertMessage: String = ""
 
     private let codeExecutionService = CodeExecutionService()
+    private let db = DatabaseManager.shared
+    private let username = "Jake" // Temporary username for demo
+    private let eloService = ELOCalculationService()
 
-    func runCode(testCases: [TestCase]) {
+    func runCode(problem: Problem) {
         guard !code.isEmpty else { return }
         isLoading = true
-        self.testCases = testCases
+        self.testCases = problem.testCases
 
-        codeExecutionService.executeCode(code, testCases: testCases) { response in
+        codeExecutionService.executeCode(code, testCases: problem.testCases) { [weak self] response in
+            guard let self = self else { return }
+            
+            // Update test cases based on execution results
             self.testCases = response.testCaseResults.map { testCase in
                 var updatedTestCase = testCase
                 if let actualOutput = testCase.actualOutput {
@@ -157,13 +75,64 @@ class CodeEditorViewModel: ObservableObject {
                 }
                 return updatedTestCase
             }
+
             self.executionTime = response.executionTime
             self.isLoading = false
+
+            // Determine if all test cases passed
+            let allPassed = self.testCases.allSatisfy { $0.passed }
+
+            if allPassed {
+                // Mark problem as solved
+                self.db.markProblemAsSolved(problemId: UUID(uuidString: problem.id)!, solution: self.code)
+                // Update ELO for success
+                let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: true, problemDifficulty: problem.difficulty)
+                self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                // Optionally, notify the user of ELO gain
+            } else {
+                // Increment attempt count
+                self.db.incrementProblemAttempts(problemId: UUID(uuidString: problem.id)!)
+                // Get current attempt count
+                let attempts = self.db.getAttemptsForProblem(problemId: UUID(uuidString: problem.id)!)
+                print("attempts: ")
+                print(attempts)
+                if attempts >= 5 {
+                    // Calculate ELO deduction
+                    let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: false, problemDifficulty: problem.difficulty)
+                    // Update ELO
+                    self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                    // Set alert message
+                    self.eloAlertMessage = "You've reached the maximum attempts for this problem. You lost \(abs(eloChange)) ELO points."
+                    self.showEloAlert = true
+                } else {
+                    // Optionally, notify the user of failed attempt
+                }
+            }
         }
     }
+}
+\n\n=== ./ViewModels/ProfileViewModel.swift ===\n
+import SwiftUI
 
-    func getConsoleOutput(for index: Int) -> String {
-        return testCases.indices.contains(index) ? testCases[index].consoleOutput : ""
+class ProfileViewModel: ObservableObject {
+    @Published var username: String = "Guest"
+    @Published var elo: Int = 1000
+    @Published var solvedProblems: [Problem] = []
+
+    private let db = DatabaseManager.shared
+    private let defaultUsername = "Jake"
+
+    func loadUserData() {
+        // Fetch user data from the database
+        if let eloValue = db.getUserELO(username: defaultUsername) {
+            self.username = defaultUsername
+            self.elo = eloValue
+        } else {
+            print("Failed to load user data")
+        }
+
+        // Fetch solved problems
+        self.solvedProblems = db.getSolvedProblems()
     }
 }
 \n\n=== ./Item.swift ===\n
@@ -186,28 +155,30 @@ final class Item {
     }
 }
 \n\n=== ./Models/Problem.swift ===\n
-// Problem.swift
 import Foundation
 
-struct Problem: Identifiable {
-    let id = UUID()
+struct Problem: Identifiable, Codable {
+    let id: String
     let title: String
     let description: String
     let difficulty: String
     let functionBody: String
+    let solved: Bool
+    let solution: String?
+    let attempts: Int
     let testCases: [TestCase]
 }
 \n\n=== ./Models/TestCase.swift ===\n
 import Foundation
 
-struct TestCase: Identifiable {
-    let id = UUID()
+struct TestCase: Identifiable, Codable {
+    let id: String
     let input: String
     let expectedOutput: String
     var actualOutput: String?
-    var functionCall: String?
-    var consoleOutput: String = ""  // New property
-    var passed: Bool = false
+    var functionCall: String
+    var consoleOutput: String // New property
+    var passed: Bool
 }
 \n\n=== ./Models/CodeExecutionResponse.swift ===\n
 // CodeExecutionResponse.swift
@@ -221,8 +192,9 @@ struct CodeExecutionResponse {
 import SwiftUI
 
 @main
-struct LeetCodeAppApp: App {
+struct LetsCodeApp: App {
     @StateObject private var viewModel = AppViewModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
 
     init() {
         // Initialize PythonRunner
@@ -231,7 +203,9 @@ struct LeetCodeAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView().environmentObject(viewModel)
+            HomeView()
+                .environmentObject(viewModel)
+                .environmentObject(profileViewModel)
         }
     }
 }
@@ -243,8 +217,8 @@ struct CodeEditorView: View {
     @StateObject private var viewModel = CodeEditorViewModel()
     let problem: Problem?
     @State private var selectedTestIndex: Int = 0
-    
-    
+    @EnvironmentObject var appViewModel: AppViewModel
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -257,17 +231,18 @@ struct CodeEditorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-                
+
                 // Code Editor
                 ScrollView(.horizontal) {
                     CustomTextEditor(text: $viewModel.code)
                         .frame(height: 300)
                         .frame(width: calculateWidth(for: viewModel.code))
                 }
-                
+
                 // Run Code Button
                 Button(action: {
-                    viewModel.runCode(testCases: problem?.testCases ?? [])
+                    guard let problem = problem else { return }
+                    viewModel.runCode(problem: problem)
                 }) {
                     Text(viewModel.isLoading ? "Running..." : "Run Code")
                         .padding()
@@ -278,12 +253,12 @@ struct CodeEditorView: View {
                 }
                 .disabled(viewModel.isLoading)
                 .padding()
-                
+
                 // Execution Summary
                 if !viewModel.isLoading && !viewModel.testCases.isEmpty {
                     let allPassed = viewModel.testCases.allSatisfy { $0.passed }
                     let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
-                    
+
                     VStack {
                         HStack {
                             Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
@@ -298,13 +273,13 @@ struct CodeEditorView: View {
                         .cornerRadius(4)
                     }
                     .padding(.horizontal)
-                    
+
                     // Test Results Section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Test Results")
                             .font(.headline)
                             .padding(.leading)
-                        
+
                         // Test Case Selectors
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
@@ -313,7 +288,7 @@ struct CodeEditorView: View {
                                     let passed = testCase.passed
                                     let isSelected = selectedTestIndex == index
                                     let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
-                                    
+
                                     Button(action: {
                                         selectedTestIndex = index
                                     }) {
@@ -327,7 +302,7 @@ struct CodeEditorView: View {
                             }
                             .padding(.horizontal)
                         }
-                        
+
                         // Selected Test Case Details
                         if !viewModel.testCases.isEmpty {
                             let testCase = viewModel.testCases[selectedTestIndex]
@@ -350,11 +325,14 @@ struct CodeEditorView: View {
             .padding()
         }
         .navigationTitle("Solve Problem")
+        .alert(isPresented: $viewModel.showEloAlert) {
+            Alert(title: Text("ELO Update"), message: Text(viewModel.eloAlertMessage), dismissButton: .default(Text("OK")))
+        }
         .onAppear {
             viewModel.code = problem?.functionBody ?? "Write your code here..."
         }
     }
-    
+
     // Helper function to calculate the width based on the content length
     private func calculateWidth(for text: String) -> CGFloat {
         let characterWidth: CGFloat = 8.0 // Average width for monospaced font
@@ -388,13 +366,87 @@ struct CodeBlock: View {
     }
 }
 \n\n=== ./Views/ProfileView.swift ===\n
-//
-//  ProfileView.swift
-//  LetsCode
-//
-//  Created by Jake Rogers on 11/10/24.
-//
+import SwiftUI
 
+struct ProfileView: View {
+    @EnvironmentObject var profileViewModel: ProfileViewModel
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Profile")
+                .font(.largeTitle)
+                .bold()
+
+            Text("Username: \(profileViewModel.username)")
+                .font(.headline)
+            Text("ELO: \(profileViewModel.elo)")
+                .font(.headline)
+
+            if profileViewModel.solvedProblems.isEmpty {
+                Text("No solved problems yet.")
+                    .foregroundColor(.secondary)
+            } else {
+                List(profileViewModel.solvedProblems) { problem in
+                    HStack {
+                        // Problem Title (Truncated if too long)
+                        Text(truncate(text: problem.title, length: 20))
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        // Difficulty
+                        Text(problem.difficulty)
+                            .foregroundColor(difficultyColor(problem.difficulty))
+                            .padding(.horizontal, 8)
+                            .padding(4)
+                            .background(difficultyColor(problem.difficulty).opacity(0.2))
+                            .cornerRadius(4)
+
+                        // ELO Change (Assuming +20 for solved)
+                        Text("+20")
+                            .foregroundColor(.green)
+                            .padding(.horizontal, 8)
+                            .padding(4)
+                            .background(Color.green.opacity(0.2))
+                            .cornerRadius(4)
+
+                        // Solved Status Icon
+                        Image(systemName: problem.solved ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .foregroundColor(problem.solved ? .green : .red)
+                    }
+                }
+                .listStyle(PlainListStyle())
+            }
+        }
+        .padding()
+        .onAppear {
+            profileViewModel.loadUserData()
+        }
+    }
+
+    // Helper Method: Truncate Text
+    private func truncate(text: String, length: Int) -> String {
+        if text.count > length {
+            let index = text.index(text.startIndex, offsetBy: length)
+            return String(text[..<index]) + "..."
+        } else {
+            return text
+        }
+    }
+
+    // Helper Method: Determine Color Based on Difficulty
+    private func difficultyColor(_ difficulty: String) -> Color {
+        switch difficulty {
+        case "Easy":
+            return .green
+        case "Medium":
+            return .orange
+        case "Hard":
+            return .red
+        default:
+            return .gray
+        }
+    }
+}
 \n\n=== ./Views/CustomCodeEditor.swift ===\n
 // CustomTextEditor.swift
 import SwiftUI
@@ -476,60 +528,82 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @State private var selectedProblem: Problem?
+    @State private var selectedTab: Tab = .home
+
+    enum Tab {
+        case home
+        case profile
+    }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                Text("LetsCode")
-                    .font(.largeTitle)
-                    .bold()
+        TabView(selection: $selectedTab) {
+            // Home Tab
+            NavigationStack {
+                VStack(spacing: 20) {
+                    Text("LetsCode")
+                        .font(.largeTitle)
+                        .bold()
 
-                Button(action: {
-                    selectedProblem = viewModel.getRandomProblem(difficulty: "Easy")
-                }) {
-                    Text("Easy")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Easy")
+                    }) {
+                        Text("Easy")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Medium")
+                    }) {
+                        Text("Medium")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Hard")
+                    }) {
+                        Text("Hard")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
                 }
-
-                Button(action: {
-                    selectedProblem = viewModel.getRandomProblem(difficulty: "Medium")
-                }) {
-                    Text("Medium")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                .padding()
+                .navigationDestination(isPresented: Binding(
+                    get: { selectedProblem != nil },
+                    set: { if !$0 { selectedProblem = nil } }
+                )) {
+                    if let problem = selectedProblem {
+                        CodeEditorView(problem: problem)
+                    }
                 }
-
-                Button(action: {
-                    selectedProblem = viewModel.getRandomProblem(difficulty: "Hard")
-                }) {
-                    Text("Hard")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                .onAppear {
+                    // Reset selectedProblem when returning to the HomeView
+                    selectedProblem = nil
                 }
             }
-            .padding()
-            .navigationDestination(isPresented: Binding(
-                get: { selectedProblem != nil },
-                set: { if !$0 { selectedProblem = nil } }
-            )) {
-                if let problem = selectedProblem {
-                    CodeEditorView(problem: problem)
-                }
+            .tabItem {
+                Label("Home", systemImage: "house")
             }
-            .onAppear {
-                // Reset selectedProblem when returning to the HomeView
-                selectedProblem = nil
+            .tag(Tab.home)
+
+            // Profile Tab
+            NavigationStack {
+                ProfileView()
             }
+            .tabItem {
+                Label("Profile", systemImage: "person.crop.circle")
+            }
+            .tag(Tab.profile)
         }
     }
 }
@@ -594,6 +668,68 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .modelContainer(for: Item.self, inMemory: true)
+}
+\n\n=== ./Services/EloCalculationService.swift ===\n
+import Foundation
+
+class ELOCalculationService {
+    // Base ELO values for different problem difficulties
+    private let difficultyELO: [String: Int] = [
+        "Easy": 500,
+        "Medium": 1000,
+        "Hard": 1500
+    ]
+    
+    // Base K-factor
+    private let baseKFactor: Double = 30.0
+    
+    /// Calculates the ELO change based on user's current ELO and problem difficulty
+    /// - Parameters:
+    ///   - userELO: The current ELO rating of the user
+    ///   - success: Whether the user successfully solved the problem
+    ///   - problemDifficulty: The difficulty level of the problem ("Easy", "Medium", "Hard")
+    /// - Returns: The ELO change (positive for gain, negative for loss)
+    func calculateELOChange(userELO: Int, success: Bool, problemDifficulty: String) -> Int {
+        // Retrieve the problem's ELO based on difficulty
+        guard let problemElo = difficultyELO[problemDifficulty] else {
+            // Default to "Easy" if difficulty is unrecognized
+            return calculateChange(userELO: userELO, problemELO: 500, success: success)
+        }
+        
+        return calculateChange(userELO: userELO, problemELO: problemElo, success: success)
+    }
+    
+    /// Helper method to calculate ELO change using the standard ELO formula with separate K-factors
+    private func calculateChange(userELO: Int, problemELO: Int, success: Bool) -> Int {
+        // Calculate the expected score
+        let expectedScore = 1.0 / (1.0 + pow(10.0, Double(problemELO - userELO) / 400.0))
+        
+        // Determine the actual score based on success
+        let actualScore: Double = success ? 1.0 : 0.0
+        
+        // Adjust K-factor based on problem difficulty and success/failure
+        let kFactor = determineKFactor(problemELO: problemELO, success: success)
+        
+        // Calculate the ELO change
+        let eloChange = Double(kFactor) * (actualScore - expectedScore)
+        
+        // Round the ELO change to the nearest integer
+        return Int(round(eloChange))
+    }
+    
+    /// Determines the K-factor based on problem difficulty and whether it's a success or failure
+    private func determineKFactor(problemELO: Int, success: Bool) -> Double {
+        switch problemELO {
+        case 1500: // Hard
+            return success ? baseKFactor * 1.5 : baseKFactor * 0.5
+        case 1000: // Medium
+            return success ? baseKFactor : baseKFactor * 1.0
+        case 500: // Easy
+            return success ? baseKFactor * 0.5 : baseKFactor * 1.5
+        default:
+            return success ? baseKFactor : baseKFactor
+        }
+    }
 }
 \n\n=== ./Services/CodeExecutionService.swift ===\n
 // CodeExecutionService.swift
@@ -816,7 +952,6 @@ class PythonRunner {
         if let sysModule = PyImport_ImportModule("sys") {
             if let stdout = PyObject_GetAttrString(sysModule, "stdout"),
                let stderr = PyObject_GetAttrString(sysModule, "stderr") {
-                print("stderr")
                 if let getValueMethod = PyObject_GetAttrString(stdout, "getvalue") {
                     if let stdoutValue = PyObject_CallObject(getValueMethod, nil),
                        let stdoutCString = PyUnicode_AsUTF8(stdoutValue) {
@@ -837,6 +972,358 @@ class PythonRunner {
                 Py_DecRef(stderr)
             }
             Py_DecRef(sysModule)
+        }
+    }
+}
+\n\n=== ./Services/DatabaseManager.swift ===\n
+import SQLite
+import Foundation
+
+// Define a type alias to resolve the conflict
+typealias SQLiteExpression = SQLite.Expression
+
+class DatabaseManager {
+    static let shared = DatabaseManager()
+
+    private var db: Connection?
+
+    // Table definitions
+    private let users = Table("users")
+    private let problems = Table("problems")
+    private let testCases = Table("test_cases")
+
+    // User Table Columns
+    private let userId = SQLiteExpression<Int>("id")
+    private let username = SQLiteExpression<String>("username")
+    private let elo = SQLiteExpression<Int>("elo")
+
+    // Problem Table Columns
+    private let problemId = SQLiteExpression<String>("id")
+    private let title = SQLiteExpression<String>("title")
+    private let description = SQLiteExpression<String>("description")
+    private let difficulty = SQLiteExpression<String>("difficulty")
+    private let functionBody = SQLiteExpression<String>("functionBody")
+    private let solved = SQLiteExpression<Bool>("solved")
+    private let solution = SQLiteExpression<String?>("solution")
+    private let attempts = SQLiteExpression<Int>("attempts")
+
+    // TestCase Table Columns
+    private let testCaseId = SQLiteExpression<String>("id")
+    private let problemIdFK = SQLiteExpression<String>("problemId")
+    private let input = SQLiteExpression<String>("input")
+    private let functionCall = SQLiteExpression<String>("functionCall")
+    private let expectedOutput = SQLiteExpression<String>("expectedOutput")
+    private let actualOutput = SQLiteExpression<String?>("actualOutput")
+    private let passed = SQLiteExpression<Bool>("passed")
+    private let consoleOutput = SQLiteExpression<String>("consoleOutput")
+
+    private init() {
+        // Initialize the SQLite database
+        do {
+            let documentDirectory = try FileManager.default.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+            let dbPath = documentDirectory.appendingPathComponent("letscode.sqlite3").path
+            db = try Connection(dbPath)
+            createTables()
+            initializeDatabase()  // Initialize the database with predefined problems
+            ensureDefaultUserExists()
+
+        } catch {
+            print("Failed to initialize database: \(error)")
+        }
+    }
+
+    // Create Tables
+    private func createTables() {
+        do {
+            // User Table
+            try db?.run(users.create(ifNotExists: true) { table in
+                table.column(userId, primaryKey: true)
+                table.column(username, unique: true)
+                table.column(elo, defaultValue: 1000)
+            })
+
+            // Problem Table
+            try db?.run(problems.create(ifNotExists: true) { table in
+                table.column(problemId, primaryKey: true)
+                table.column(title)
+                table.column(description)
+                table.column(difficulty)
+                table.column(functionBody)
+                table.column(solved, defaultValue: false)
+                table.column(solution)
+                table.column(attempts, defaultValue: 0)
+            })
+
+            // TestCase Table
+            try db?.run(testCases.create(ifNotExists: true) { table in
+                table.column(testCaseId, primaryKey: true)
+                table.column(problemIdFK)
+                table.column(input)
+                table.column(expectedOutput)
+                table.column(functionCall)
+                table.column(actualOutput, defaultValue: "")
+                table.column(consoleOutput, defaultValue: "")
+                table.column(passed, defaultValue: false)
+                table.foreignKey(problemIdFK, references: problems, problemId, update: .cascade, delete: .cascade)
+            })
+        } catch {
+            print("Failed to create tables: \(error)")
+        }
+    }
+
+    // Initialize Database with Predefined Problems
+    private func bulkInsertProblems(_ incomingProblems: [Problem]) {
+        guard let db = db else { return }
+        do {
+            try db.transaction {
+                for problem in incomingProblems {
+                    // Insert Problem
+                    try db.run(problems.insert(
+                        problemId <- problem.id,
+                        title <- problem.title,
+                        description <- problem.description,
+                        difficulty <- problem.difficulty,
+                        functionBody <- problem.functionBody,
+                        solved <- problem.solved,
+                        solution <- problem.solution,
+                        attempts <- problem.attempts
+                    ))
+
+                    // Insert Test Cases
+                    for testCase in problem.testCases {
+                        try db.run(testCases.insert(
+                            testCaseId <- testCase.id,
+                            problemIdFK <- problem.id,
+                            input <- testCase.input,
+                            functionCall <- testCase.functionCall,
+                            expectedOutput <- testCase.expectedOutput,
+                            actualOutput <- testCase.actualOutput ?? "",
+                            consoleOutput <- testCase.consoleOutput,
+                            passed <- testCase.passed
+                        ))
+                    }
+                }
+            }
+            print("Successfully inserted \(incomingProblems.count) problems with their test cases.")
+        } catch {
+            print("Failed to bulk insert problems: \(error)")
+        }
+    }
+
+    // Updated Initialize Database
+    private func initializeDatabase() {
+        do {
+            // Check if there are already problems in the database
+            let problemCount = try db?.scalar(problems.count) ?? 0
+            if problemCount >= 300 {
+                print("Database already contains \(problemCount) problems. Skipping initialization.")
+                return
+            }
+
+            // Load problems from JSON
+            if let url = Bundle.main.url(forResource: "problems", withExtension: "json") {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let decodedProblems = try decoder.decode([Problem].self, from: data)
+                bulkInsertProblems(decodedProblems)
+            } else {
+                print("JSON file not found in the bundle.")
+            }
+
+            print("Database initialized with predefined problems.")
+        } catch {
+            print("Error initializing database: \(error)")
+        }
+    }
+
+    // User Management
+    func createUser(username: String) {
+        do {
+            try db?.run(users.insert(self.username <- username, elo <- 1000))
+            print("User '\(username)' created with ELO 1000.")
+        } catch {
+            print("Failed to create user: \(error)")
+        }
+    }
+
+    func getUserELO(username: String) -> Int? {
+        do {
+            if let user = try db?.pluck(users.filter(self.username == username)) {
+                return user[elo]
+            }
+        } catch {
+            print("Failed to fetch ELO: \(error)")
+        }
+        return nil
+    }
+
+    func updateUserELO(username: String, newELO: Int) {
+        let user = users.filter(self.username == username)
+        do {
+            try db?.run(user.update(elo <- newELO))
+            print("User '\(username)' ELO updated to \(newELO).")
+        } catch {
+            print("Failed to update ELO: \(error)")
+        }
+    }
+
+    // Problem Management
+    func addProblem(problem: Problem) {
+        do {
+            try db?.run(problems.insert(
+                problemId <- problem.id,
+                title <- problem.title,
+                description <- problem.description,
+                difficulty <- problem.difficulty,
+                functionBody <- problem.functionBody,
+                solved <- false,
+                solution <- nil,
+                attempts <- 0
+            ))
+            print("Problem '\(problem.title)' added to the database.")
+        } catch {
+            print("Failed to add problem: \(error)")
+        }
+    }
+
+    func markProblemAsSolved(problemId: UUID, solution: String) {
+        let problem = problems.filter(self.problemId == problemId.uuidString)
+        do {
+            try db?.run(problem.update(solved <- true, self.solution <- solution))
+            print("Problem with ID '\(problemId)' marked as solved.")
+        } catch {
+            print("Failed to mark problem as solved: \(error)")
+        }
+    }
+
+    func incrementProblemAttempts(problemId: UUID) {
+        let problem = problems.filter(self.problemId == problemId.uuidString)
+        do {
+            let update = problem.update(attempts <- attempts + 1)
+            if try db?.run(update) ?? 0 > 0 {
+                print("Incremented attempts for problem ID '\(problemId)'.")
+            } else {
+                print("No rows updated for problem ID '\(problemId)'.")
+            }
+            
+            // Fetch the updated attempts count
+            if let updatedProblem = try db?.pluck(problem) {
+                print("Updated attempts: \(updatedProblem[attempts])")
+            } else {
+                print("Failed to fetch updated attempts for problem ID '\(problemId)'.")
+            }
+        } catch {
+            print("Failed to increment attempts: \(error)")
+        }
+    }
+
+    // Fetch Problems
+    func getUnsolvedProblem(targetDifficulty: String) -> Problem? {
+        do {
+            // Query for the first unsolved problem with the specified difficulty
+            if let problemRow = try db?.pluck(problems.filter(difficulty == targetDifficulty && solved == false)) {
+                
+                // Fetch associated test cases for the problem
+                let associatedTestCases = try fetchTestCases(for: problemRow[problemId])
+                
+                // Create and return the Problem object with populated testCases
+                return Problem(
+                    id: problemRow[problemId],
+                    title: problemRow[title],
+                    description: problemRow[description],
+                    difficulty: problemRow[difficulty],
+                    functionBody: problemRow[functionBody],
+                    solved: problemRow[solved],
+                    solution: problemRow[solution],
+                    attempts: problemRow[attempts],
+                    testCases: associatedTestCases
+                )
+            }
+        } catch {
+            print("Failed to fetch unsolved problem: \(error)")
+        }
+        return nil
+    }
+
+    // Fetch User's Solved Problems Ordered by Most Recent
+    func getSolvedProblems() -> [Problem] {
+        var solvedProblems = [Problem]()
+        do {
+            // Assuming higher attempts indicate more recent solves; ideally, include a 'solvedAt' timestamp
+            for row in try db!.prepare(problems.filter(solved == true).order(attempts.desc)) {
+                let associatedTestCases = try fetchTestCases(for: row[problemId])
+                
+                let problem = Problem(
+                    id: row[problemId],
+                    title: row[title],
+                    description: row[description],
+                    difficulty: row[difficulty],
+                    functionBody: row[functionBody],
+                    solved: row[solved],
+                    solution: row[solution],
+                    attempts: row[attempts],
+                    testCases: associatedTestCases
+                )
+                solvedProblems.append(problem)
+            }
+        } catch {
+            print("Failed to fetch solved problems: \(error)")
+        }
+        return solvedProblems
+    }
+
+    // Get Number of Attempts for a Problem
+    func getAttemptsForProblem(problemId: UUID) -> Int {
+        do {
+            if let problem = try db?.pluck(problems.filter(self.problemId == problemId.uuidString)) {
+                return problem[attempts]
+            }
+        } catch {
+            print("Failed to fetch attempts: \(error)")
+        }
+        return 0
+    }
+
+    // Helper Method to Fetch Test Cases for a Given Problem ID
+    private func fetchTestCases(for problemIdValue: String) throws -> [TestCase] {
+        var testCasesList = [TestCase]()
+        
+        // Define the query to filter test cases by problemIdFK
+        let query = testCases.filter(problemIdFK == problemIdValue)
+        
+        // Iterate through the filtered test cases
+        for testCaseRow in try db!.prepare(query) {
+            let testCase = TestCase(
+                id: testCaseRow[testCaseId],
+                input: testCaseRow[input],
+                expectedOutput: testCaseRow[expectedOutput],
+                actualOutput: testCaseRow[actualOutput],
+                functionCall: testCaseRow[functionCall],
+                consoleOutput: testCaseRow[consoleOutput],
+                passed: testCaseRow[passed]
+            )
+            testCasesList.append(testCase)
+        }
+        
+        return testCasesList
+    }
+    
+    private func ensureDefaultUserExists() {
+        let existingUser = users.filter(username == "Jake")
+        do {
+            if try db?.pluck(existingUser) == nil {
+                createUser(username: "Jake")
+                print("Default user 'Jake' created.")
+            } else {
+                print("Default user 'Jake' already exists.")
+            }
+        } catch {
+            print("Failed to check or create default user: \(error)")
         }
     }
 }

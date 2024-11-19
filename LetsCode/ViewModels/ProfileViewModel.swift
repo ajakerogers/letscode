@@ -3,9 +3,10 @@ import SwiftUI
 class ProfileViewModel: ObservableObject {
     @Published var username: String = "Guest"
     @Published var elo: Int = 1000
+    @Published var solvedProblems: [Problem] = []
 
     private let db = DatabaseManager.shared
-    private let defaultUsername = "Jake" // Replace with your desired default username
+    private let defaultUsername = "Jake"
 
     func loadUserData() {
         // Fetch user data from the database
@@ -15,11 +16,8 @@ class ProfileViewModel: ObservableObject {
         } else {
             print("Failed to load user data")
         }
-    }
 
-    func resetELO() {
-        // Reset ELO to default value
-        db.updateUserELO(username: defaultUsername, newELO: 1000)
-        self.elo = 1000
+        // Fetch solved problems
+        self.solvedProblems = db.getSolvedProblems()
     }
 }
