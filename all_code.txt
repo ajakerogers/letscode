@@ -1,0 +1,1436 @@
+\n\n=== ./LetsCodeUITests/LetsCodeUITests.swift ===\n
+//
+//  LetsCodeUITests.swift
+//  LetsCodeUITests
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import XCTest
+
+final class LetsCodeUITests: XCTestCase {
+
+    override func setUpWithError() throws {
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+
+        // In UI tests it is usually best to stop immediately when a failure occurs.
+        continueAfterFailure = false
+
+        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+    }
+
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+    @MainActor
+    func testExample() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launch()
+
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+
+    @MainActor
+    func testLaunchPerformance() throws {
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                XCUIApplication().launch()
+            }
+        }
+    }
+}
+\n\n=== ./LetsCodeUITests/LetsCodeUITestsLaunchTests.swift ===\n
+//
+//  LetsCodeUITestsLaunchTests.swift
+//  LetsCodeUITests
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import XCTest
+
+final class LetsCodeUITestsLaunchTests: XCTestCase {
+
+    override class var runsForEachTargetApplicationUIConfiguration: Bool {
+        true
+    }
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+    }
+
+    @MainActor
+    func testLaunch() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        // Insert steps here to perform after app launch but before taking a screenshot,
+        // such as logging into a test account or navigating somewhere in the app
+
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Launch Screen"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+}
+\n\n=== ./LetsCodeTests/LetsCodeTests.swift ===\n
+//
+//  LetsCodeTests.swift
+//  LetsCodeTests
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import Testing
+@testable import LetsCode
+
+struct LetsCodeTests {
+
+    @Test func example() async throws {
+        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    }
+
+}
+\n\n=== ./LetsCode/ViewModels/AppViewModel.swift ===\n
+import Foundation
+
+class AppViewModel: ObservableObject {
+    @Published var problems: [Problem] = []
+    @Published var completedProblems: [Problem] = []
+    @Published var userELO: Int = 1000
+    private let db = DatabaseManager.shared
+    private let username = "Jake"  // Temporary username for demo
+    private let eloService = ELOCalculationService()
+
+    init() {
+        userELO = db.getUserELO(username: username) ?? 1000
+        loadProblems()
+    }
+
+    func loadProblems() {
+        problems = db.getSolvedProblems()
+    }
+
+    func getRandomProblem(difficulty: String) -> Problem? {
+        return db.getUnsolvedProblem(targetDifficulty: difficulty)
+    }
+
+    // Update ELO based on success or failure
+    func updateELO(success: Bool, problemDifficulty: String) {
+        let eloChange = eloService.calculateELOChange(userELO: userELO, success: success, problemDifficulty: problemDifficulty)
+        userELO += eloChange
+        db.updateUserELO(username: username, newELO: userELO)
+    }
+
+    // Handle successful problem solving
+    func handleSuccess(problem: Problem) {
+        updateELO(success: true, problemDifficulty: problem.difficulty)
+    }
+
+    // Handle failed problem solving
+    func handleFailure(problem: Problem) {
+        updateELO(success: false, problemDifficulty: problem.difficulty)
+    }
+}
+\n\n=== ./LetsCode/ViewModels/CodeEditorViewModel.swift ===\n
+// CodeEditorViewModel.swift
+import Foundation
+
+class CodeEditorViewModel: ObservableObject {
+    @Published var code: String = ""
+    @Published var isLoading: Bool = false
+    @Published var testCases: [TestCase] = []
+    @Published var consoleOutput: String = ""
+    @Published var executionTime: TimeInterval = 0.0
+    @Published var showEloAlert: Bool = false
+    @Published var eloAlertMessage: String = ""
+
+    private let codeExecutionService = CodeExecutionService()
+    private let db = DatabaseManager.shared
+    private let username = "Jake" // Temporary username for demo
+    private let eloService = ELOCalculationService()
+
+    func runCode(problem: Problem) {
+        guard !code.isEmpty else { return }
+        isLoading = true
+        self.testCases = problem.testCases
+
+        codeExecutionService.executeCode(code, testCases: problem.testCases) { [weak self] response in
+            guard let self = self else { return }
+            
+            // Update test cases based on execution results
+            self.testCases = response.testCaseResults.map { testCase in
+                var updatedTestCase = testCase
+                if let actualOutput = testCase.actualOutput {
+                    updatedTestCase.passed = actualOutput.trimmingCharacters(in: .whitespacesAndNewlines) == testCase.expectedOutput.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    updatedTestCase.passed = false
+                }
+                return updatedTestCase
+            }
+
+            self.executionTime = response.executionTime
+            self.isLoading = false
+
+            // Determine if all test cases passed
+            let allPassed = self.testCases.allSatisfy { $0.passed }
+
+            if allPassed {
+                // Mark problem as solved
+                self.db.markProblemAsSolved(problemId: UUID(uuidString: problem.id)!, solution: self.code)
+                // Update ELO for success
+                let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: true, problemDifficulty: problem.difficulty)
+                self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                // Optionally, notify the user of ELO gain
+            } else {
+                // Increment attempt count
+                self.db.incrementProblemAttempts(problemId: UUID(uuidString: problem.id)!)
+                // Get current attempt count
+                let attempts = self.db.getAttemptsForProblem(problemId: UUID(uuidString: problem.id)!)
+                print("attempts: ")
+                print(attempts)
+                if attempts >= 5 {
+                    // Calculate ELO deduction
+                    let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: false, problemDifficulty: problem.difficulty)
+                    // Update ELO
+                    self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                    // Set alert message
+                    self.eloAlertMessage = "You've reached the maximum attempts for this problem. You lost \(abs(eloChange)) ELO points."
+                    self.showEloAlert = true
+                } else {
+                    // Optionally, notify the user of failed attempt
+                }
+            }
+        }
+    }
+}
+\n\n=== ./LetsCode/ViewModels/ProfileViewModel.swift ===\n
+import SwiftUI
+
+class ProfileViewModel: ObservableObject {
+    @Published var username: String = "Guest"
+    @Published var elo: Int = 1000
+    @Published var solvedProblems: [Problem] = []
+
+    private let db = DatabaseManager.shared
+    private let defaultUsername = "Jake"
+
+    func loadUserData() {
+        // Fetch user data from the database
+        if let eloValue = db.getUserELO(username: defaultUsername) {
+            self.username = defaultUsername
+            self.elo = eloValue
+        } else {
+            print("Failed to load user data")
+        }
+
+        // Fetch solved problems
+        self.solvedProblems = db.getSolvedProblems()
+    }
+}
+\n\n=== ./LetsCode/Item.swift ===\n
+//
+//  Item.swift
+//  LetsCode
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import Foundation
+import SwiftData
+
+@Model
+final class Item {
+    var timestamp: Date
+    
+    init(timestamp: Date) {
+        self.timestamp = timestamp
+    }
+}
+\n\n=== ./LetsCode/Models/Problem.swift ===\n
+import Foundation
+
+struct Problem: Identifiable, Codable {
+    let id: String
+    let title: String
+    let description: String
+    let difficulty: String
+    let functionBody: String
+    let solved: Bool
+    let solution: String?
+    let attempts: Int
+    let testCases: [TestCase]
+}
+\n\n=== ./LetsCode/Models/TestCase.swift ===\n
+import Foundation
+
+struct TestCase: Identifiable, Codable {
+    let id: String
+    let input: String
+    let expectedOutput: String
+    var actualOutput: String?
+    var functionCall: String
+    var consoleOutput: String // New property
+    var passed: Bool
+}
+\n\n=== ./LetsCode/Models/CodeExecutionResponse.swift ===\n
+// CodeExecutionResponse.swift
+import Foundation
+
+struct CodeExecutionResponse {
+    let testCaseResults: [TestCase]
+    let executionTime: TimeInterval
+}
+\n\n=== ./LetsCode/LetsCodeApp.swift ===\n
+import SwiftUI
+
+@main
+struct LetsCodeApp: App {
+    @StateObject private var viewModel = AppViewModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
+
+    init() {
+        // Initialize PythonRunner
+        PythonRunner.shared.initializePython()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            HomeView()
+                .environmentObject(viewModel)
+                .environmentObject(profileViewModel)
+        }
+    }
+}
+\n\n=== ./LetsCode/Views/CodeEditorView.swift ===\n
+// CodeEditorView.swift
+import SwiftUI
+
+struct CodeEditorView: View {
+    @StateObject private var viewModel = CodeEditorViewModel()
+    let problem: Problem?
+    @State private var selectedTestIndex: Int = 0
+    @EnvironmentObject var appViewModel: AppViewModel
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                // Problem Title and Description
+                if let problem = problem {
+                    Text(problem.title)
+                        .font(.title)
+                        .bold()
+                    Text(problem.description)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+
+                // Code Editor
+                ScrollView(.horizontal) {
+                    CustomTextEditor(text: $viewModel.code)
+                        .frame(height: 300)
+                        .frame(width: calculateWidth(for: viewModel.code))
+                }
+
+                // Run Code Button
+                Button(action: {
+                    guard let problem = problem else { return }
+                    viewModel.runCode(problem: problem)
+                }) {
+                    Text(viewModel.isLoading ? "Running..." : "Run Code")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(viewModel.isLoading ? Color.gray : Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(4)
+                }
+                .disabled(viewModel.isLoading)
+                .padding()
+
+                // Execution Summary
+                if !viewModel.isLoading && !viewModel.testCases.isEmpty {
+                    let allPassed = viewModel.testCases.allSatisfy { $0.passed }
+                    let summaryColor = allPassed ? Color.green.opacity(0.1) : Color.red.opacity(0.1)
+
+                    VStack {
+                        HStack {
+                            Text(allPassed ? "All Cases Passed" : "Some Cases Failed")
+                                .foregroundColor(allPassed ? .green : .red)
+                                .font(.headline)
+                            Spacer()
+                            Text("Execution Time: \(viewModel.executionTime, specifier: "%.2f")s")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(15)
+                        .background(summaryColor)
+                        .cornerRadius(4)
+                    }
+                    .padding(.horizontal)
+
+                    // Test Results Section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Test Results")
+                            .font(.headline)
+                            .padding(.leading)
+
+                        // Test Case Selectors
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(viewModel.testCases.indices, id: \.self) { index in
+                                    let testCase = viewModel.testCases[index]
+                                    let passed = testCase.passed
+                                    let isSelected = selectedTestIndex == index
+                                    let buttonColor = passed ? (isSelected ? Color.green : Color.green.opacity(0.3)) : (isSelected ? Color.red : Color.red.opacity(0.3))
+
+                                    Button(action: {
+                                        selectedTestIndex = index
+                                    }) {
+                                        Text("Case \(index + 1)")
+                                            .padding(8)
+                                            .background(buttonColor)
+                                            .foregroundColor(isSelected ? .white : (passed ? .green : .red))
+                                            .cornerRadius(4)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+
+                        // Selected Test Case Details
+                        if !viewModel.testCases.isEmpty {
+                            let testCase = viewModel.testCases[selectedTestIndex]
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                CodeBlock(label: "Input:", content: "\(testCase.input)")
+                                CodeBlock(label: "Expected Output:", content: "\(testCase.expectedOutput)")
+                                CodeBlock(label: "Actual Output:", content: "\(testCase.actualOutput ?? "Not executed")")
+                                CodeBlock(label: "Console Log:", content: testCase.consoleOutput)  // Display per-test-case console output
+                            }
+                            .padding()
+                            .background(Color(UIColor.systemGray6))
+                            .cornerRadius(4)
+                            .padding(.horizontal)
+                        }
+                    }
+                    .padding(.top)
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Solve Problem")
+        .alert(isPresented: $viewModel.showEloAlert) {
+            Alert(title: Text("ELO Update"), message: Text(viewModel.eloAlertMessage), dismissButton: .default(Text("OK")))
+        }
+        .onAppear {
+            viewModel.code = problem?.functionBody ?? "Write your code here..."
+        }
+    }
+
+    // Helper function to calculate the width based on the content length
+    private func calculateWidth(for text: String) -> CGFloat {
+        let characterWidth: CGFloat = 8.0 // Average width for monospaced font
+        let padding: CGFloat = 40.0 // Additional padding
+        let minWidth = UIScreen.main.bounds.width - 40 // Minimum width based on screen size
+        let maxWidth = UIScreen.main.bounds.width * 2 // Maximum width set to twice the screen width
+
+        // Calculate the estimated width and clamp it between minWidth and maxWidth
+        let estimatedWidth = CGFloat(text.count) * characterWidth + padding
+        return max(min(estimatedWidth, maxWidth), minWidth)
+    }
+}
+
+// Helper View for Code Blocks
+struct CodeBlock: View {
+    let label: String
+    let content: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.body)
+                .bold()
+            Text(content)
+                .font(.system(.body, design: .monospaced))
+                .padding(8)
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+\n\n=== ./LetsCode/Views/ProfileView.swift ===\n
+import SwiftUI
+
+struct ProfileView: View {
+    @EnvironmentObject var profileViewModel: ProfileViewModel
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Profile")
+                .font(.largeTitle)
+                .bold()
+
+            Text("Username: \(profileViewModel.username)")
+                .font(.headline)
+            Text("ELO: \(profileViewModel.elo)")
+                .font(.headline)
+
+            if profileViewModel.solvedProblems.isEmpty {
+                Text("No solved problems yet.")
+                    .foregroundColor(.secondary)
+            } else {
+                List(profileViewModel.solvedProblems) { problem in
+                    HStack {
+                        // Problem Title (Truncated if too long)
+                        Text(truncate(text: problem.title, length: 20))
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        // Difficulty
+                        Text(problem.difficulty)
+                            .foregroundColor(difficultyColor(problem.difficulty))
+                            .padding(.horizontal, 8)
+                            .padding(4)
+                            .background(difficultyColor(problem.difficulty).opacity(0.2))
+                            .cornerRadius(4)
+
+                        // ELO Change (Assuming +20 for solved)
+                        Text("+20")
+                            .foregroundColor(.green)
+                            .padding(.horizontal, 8)
+                            .padding(4)
+                            .background(Color.green.opacity(0.2))
+                            .cornerRadius(4)
+
+                        // Solved Status Icon
+                        Image(systemName: problem.solved ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .foregroundColor(problem.solved ? .green : .red)
+                    }
+                }
+                .listStyle(PlainListStyle())
+            }
+        }
+        .padding()
+        .onAppear {
+            profileViewModel.loadUserData()
+        }
+    }
+
+    // Helper Method: Truncate Text
+    private func truncate(text: String, length: Int) -> String {
+        if text.count > length {
+            let index = text.index(text.startIndex, offsetBy: length)
+            return String(text[..<index]) + "..."
+        } else {
+            return text
+        }
+    }
+
+    // Helper Method: Determine Color Based on Difficulty
+    private func difficultyColor(_ difficulty: String) -> Color {
+        switch difficulty {
+        case "Easy":
+            return .green
+        case "Medium":
+            return .orange
+        case "Hard":
+            return .red
+        default:
+            return .gray
+        }
+    }
+}
+\n\n=== ./LetsCode/Views/CustomCodeEditor.swift ===\n
+// CustomTextEditor.swift
+import SwiftUI
+
+struct CustomTextEditor: UIViewRepresentable {
+    @Binding var text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+
+        textView.delegate = context.coordinator
+        textView.isEditable = true
+        textView.isSelectable = true
+
+        // Disable smart quotes and other automatic text features
+        textView.autocapitalizationType = .none
+        textView.autocorrectionType = .no
+        textView.smartQuotesType = .no
+        textView.smartDashesType = .no
+        textView.spellCheckingType = .no
+
+        textView.font = UIFont.monospacedSystemFont(ofSize: UIFont.systemFontSize, weight: .regular)
+        textView.backgroundColor = UIColor.white
+        textView.layer.cornerRadius = 4
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.gray.withAlphaComponent(0.3).cgColor
+
+        return textView
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        if uiView.text != self.text {
+            uiView.text = self.text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UITextViewDelegate {
+        var parent: CustomTextEditor
+
+        init(_ parent: CustomTextEditor) {
+            self.parent = parent
+        }
+
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+        }
+
+        // Implement auto-indentation
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            if text == "\n" {
+                let nsText = textView.text as NSString
+                let currentLineRange = nsText.lineRange(for: NSRange(location: range.location, length: 0))
+                let currentLine = nsText.substring(with: currentLineRange)
+                let leadingWhitespace = currentLine.prefix(while: { $0 == " " || $0 == "\t" })
+                let insertion = "\n" + leadingWhitespace
+                textView.replace(range, withText: insertion)
+                return false
+            }
+            return true
+        }
+    }
+}
+
+extension UITextView {
+    func replace(_ range: NSRange, withText text: String) {
+        if let textRange = self.textRange(from: self.position(from: self.beginningOfDocument, offset: range.location)!,
+                                          to: self.position(from: self.beginningOfDocument, offset: NSMaxRange(range))!) {
+            self.replace(textRange, withText: text)
+        }
+    }
+}
+\n\n=== ./LetsCode/Views/HomeView.swift ===\n
+import SwiftUI
+
+struct HomeView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+    @State private var selectedProblem: Problem?
+    @State private var selectedTab: Tab = .home
+
+    enum Tab {
+        case home
+        case profile
+    }
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            // Home Tab
+            NavigationStack {
+                VStack(spacing: 20) {
+                    Text("LetsCode")
+                        .font(.largeTitle)
+                        .bold()
+
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Easy")
+                    }) {
+                        Text("Easy")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Medium")
+                    }) {
+                        Text("Medium")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+
+                    Button(action: {
+                        selectedProblem = viewModel.getRandomProblem(difficulty: "Hard")
+                    }) {
+                        Text("Hard")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
+                .padding()
+                .navigationDestination(isPresented: Binding(
+                    get: { selectedProblem != nil },
+                    set: { if !$0 { selectedProblem = nil } }
+                )) {
+                    if let problem = selectedProblem {
+                        CodeEditorView(problem: problem)
+                    }
+                }
+                .onAppear {
+                    // Reset selectedProblem when returning to the HomeView
+                    selectedProblem = nil
+                }
+            }
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
+            .tag(Tab.home)
+
+            // Profile Tab
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Label("Profile", systemImage: "person.crop.circle")
+            }
+            .tag(Tab.profile)
+        }
+    }
+}
+\n\n=== ./LetsCode/ContentView.swift ===\n
+//
+//  ContentView.swift
+//  LetsCode
+//
+//  Created by Jake Rogers on 11/8/24.
+//
+
+import SwiftUI
+import SwiftData
+
+struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var items: [Item]
+
+    var body: some View {
+        NavigationSplitView {
+            List {
+                ForEach(items) { item in
+                    NavigationLink {
+                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                    } label: {
+                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                    }
+                }
+                .onDelete(perform: deleteItems)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    EditButton()
+                }
+                ToolbarItem {
+                    Button(action: addItem) {
+                        Label("Add Item", systemImage: "plus")
+                    }
+                }
+            }
+        } detail: {
+            Text("Select an item")
+        }
+    }
+
+    private func addItem() {
+        withAnimation {
+            let newItem = Item(timestamp: Date())
+            modelContext.insert(newItem)
+        }
+    }
+
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                modelContext.delete(items[index])
+            }
+        }
+    }
+}
+
+#Preview {
+    ContentView()
+        .modelContainer(for: Item.self, inMemory: true)
+}
+\n\n=== ./LetsCode/Services/EloCalculationService.swift ===\n
+import Foundation
+
+class ELOCalculationService {
+    // Base ELO values for different problem difficulties
+    private let difficultyELO: [String: Int] = [
+        "Easy": 500,
+        "Medium": 1000,
+        "Hard": 1500
+    ]
+    
+    // Base K-factor
+    private let baseKFactor: Double = 30.0
+    
+    /// Calculates the ELO change based on user's current ELO and problem difficulty
+    /// - Parameters:
+    ///   - userELO: The current ELO rating of the user
+    ///   - success: Whether the user successfully solved the problem
+    ///   - problemDifficulty: The difficulty level of the problem ("Easy", "Medium", "Hard")
+    /// - Returns: The ELO change (positive for gain, negative for loss)
+    func calculateELOChange(userELO: Int, success: Bool, problemDifficulty: String) -> Int {
+        // Retrieve the problem's ELO based on difficulty
+        guard let problemElo = difficultyELO[problemDifficulty] else {
+            // Default to "Easy" if difficulty is unrecognized
+            return calculateChange(userELO: userELO, problemELO: 500, success: success)
+        }
+        
+        return calculateChange(userELO: userELO, problemELO: problemElo, success: success)
+    }
+    
+    /// Helper method to calculate ELO change using the standard ELO formula with separate K-factors
+    private func calculateChange(userELO: Int, problemELO: Int, success: Bool) -> Int {
+        // Calculate the expected score
+        let expectedScore = 1.0 / (1.0 + pow(10.0, Double(problemELO - userELO) / 400.0))
+        
+        // Determine the actual score based on success
+        let actualScore: Double = success ? 1.0 : 0.0
+        
+        // Adjust K-factor based on problem difficulty and success/failure
+        let kFactor = determineKFactor(problemELO: problemELO, success: success)
+        
+        // Calculate the ELO change
+        let eloChange = Double(kFactor) * (actualScore - expectedScore)
+        
+        // Round the ELO change to the nearest integer
+        return Int(round(eloChange))
+    }
+    
+    /// Determines the K-factor based on problem difficulty and whether it's a success or failure
+    private func determineKFactor(problemELO: Int, success: Bool) -> Double {
+        switch problemELO {
+        case 1500: // Hard
+            return success ? baseKFactor * 1.5 : baseKFactor * 0.5
+        case 1000: // Medium
+            return success ? baseKFactor : baseKFactor * 1.0
+        case 500: // Easy
+            return success ? baseKFactor * 0.5 : baseKFactor * 1.5
+        default:
+            return success ? baseKFactor : baseKFactor
+        }
+    }
+}
+\n\n=== ./LetsCode/Services/CodeExecutionService.swift ===\n
+// CodeExecutionService.swift
+import Foundation
+
+class CodeExecutionService {
+    func executeCode(_ code: String, testCases: [TestCase], completion: @escaping (CodeExecutionResponse) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            var updatedTestCases = [TestCase]()
+            let startTime = Date()
+
+            for testCase in testCases {
+                var updatedTestCase = testCase
+                let input = testCase.input
+                let functionCall = testCase.functionCall ?? ""
+
+                // Combine code with function call for execution
+                let codeToExecute = "\(code)\nresult = \(functionCall)"
+
+                // Execute user code and capture result
+                if let result = PythonRunner.shared.executeUserCode(codeToExecute, withInput: input) {
+                    updatedTestCase.actualOutput = result.output
+                    updatedTestCase.consoleOutput = result.consoleOutput  // Store console output per test case
+                } else {
+                    updatedTestCase.actualOutput = "Error"
+                    updatedTestCase.consoleOutput = "Error occurred during execution.\n"
+                }
+
+                updatedTestCases.append(updatedTestCase)
+            }
+
+            let executionTime = Date().timeIntervalSince(startTime)
+            let response = CodeExecutionResponse(testCaseResults: updatedTestCases, executionTime: executionTime)
+
+            DispatchQueue.main.async {
+                completion(response)
+            }
+        }
+    }
+}
+\n\n=== ./LetsCode/Services/PythonRunner.swift ===\n
+// PythonRunner.swift
+import Foundation
+
+class PythonRunner {
+    static let shared = PythonRunner()
+    private var mainThreadState: UnsafeMutablePointer<PyThreadState>?
+    
+    private init() {
+        // Initialization should be called from the main thread in your AppDelegate or @main struct
+    }
+    
+    /// Initializes the Python interpreter with the necessary configuration.
+    func initializePython() {
+        // Ensure this is called on the main thread
+        assert(Thread.isMainThread, "initializePython must be called on the main thread")
+        
+        var config = PyConfig()
+        PyConfig_InitPythonConfig(&config)
+        
+        // Set program name (optional but recommended)
+        if let programName = Bundle.main.executablePath {
+            programName.withCString { cString in
+                withUnsafeMutablePointer(to: &config) { configPtr in
+                    PyConfig_SetBytesString(configPtr, &configPtr.pointee.program_name, cString)
+                }
+            }
+        }
+        
+        // Set PYTHONHOME
+        if let resourcePath = Bundle.main.resourcePath {
+            let pythonHome = "\(resourcePath)/python"
+            pythonHome.withCString { cString in
+                withUnsafeMutablePointer(to: &config) { configPtr in
+                    PyConfig_SetBytesString(configPtr, &configPtr.pointee.home, cString)
+                }
+            }
+        }
+        
+        // Initialize the Python interpreter
+        withUnsafeMutablePointer(to: &config) { configPtr in
+            let status = Py_InitializeFromConfig(configPtr)
+            PyConfig_Clear(configPtr)
+            if PyStatus_Exception(status) != 0 {
+                Py_ExitStatusException(status)
+            }
+        }
+        print("Python Initialized")
+        
+        // Save the main thread state and release the GIL
+        mainThreadState = PyEval_SaveThread()
+    }
+    
+    /// Executes the user-provided Python code with the given input.
+    /// - Parameters:
+    ///   - code: The user's Python code as a string.
+    ///   - input: The input to pass to the user's function.
+    /// - Returns: A tuple containing the output from the user's function and console output, or `nil` if execution failed.
+    func executeUserCode(_ code: String, withInput input: String) -> (output: String, consoleOutput: String)? {
+        // Ensure the Python interpreter is initialized
+        guard mainThreadState != nil else {
+            print("Python interpreter is not initialized.")
+            return nil
+        }
+        
+        var result: String? = nil
+        var consoleOutput = ""
+        
+        // Run the code on a background thread to avoid blocking the main thread
+        let executionQueue = DispatchQueue(label: "PythonExecutionQueue")
+        executionQueue.sync {
+            // Acquire the GIL
+            PyEval_RestoreThread(mainThreadState)
+            
+            defer {
+                // Release the GIL and save the thread state
+                mainThreadState = PyEval_SaveThread()
+            }
+            
+            // Prepare the code to execute
+            let fullCode = """
+            import sys
+            import io
+            sys.stdout = io.StringIO()
+            sys.stderr = io.StringIO()
+            
+            \(code)
+            """
+            
+            // Ensure the code is in UTF8 format
+            guard let codeCString = fullCode.cString(using: .utf8) else {
+                print("Failed to convert code to C string.")
+                return
+            }
+            
+            // Create a new main module
+            guard let mainModule = PyImport_AddModule("__main__") else {
+                print("Failed to import __main__ module.")
+                return
+            }
+            Py_IncRef(mainModule)
+            
+            guard let globals = PyModule_GetDict(mainModule) else {
+                print("Failed to get globals from __main__ module.")
+                Py_DecRef(mainModule)
+                return
+            }
+            
+            // Compile the user's code
+            guard let compiledCode = Py_CompileString(codeCString, "<string>", Py_file_input) else {
+                handlePythonError(prefix: "Syntax Error", consoleOutput: &consoleOutput)
+                Py_DecRef(mainModule)
+                return
+            }
+            
+            // Execute the compiled code
+            if let pyResult = PyEval_EvalCode(compiledCode, globals, globals) {
+                // Fetch the 'result' variable from the Python globals
+                if let resultObject = PyDict_GetItemString(globals, "result") {
+                    if let resultStr = PyObject_Str(resultObject),
+                       let resultCString = PyUnicode_AsUTF8(resultStr) {
+                        result = String(cString: resultCString)
+                        Py_DecRef(resultStr)
+                    }
+                }
+            } else {
+                handlePythonError(prefix: "Runtime Error", consoleOutput: &consoleOutput)
+                Py_DecRef(compiledCode)
+                Py_DecRef(mainModule)
+                return
+            }
+            Py_DecRef(compiledCode)
+            
+            // Capture console output
+            captureConsoleOutput(&consoleOutput)
+            
+            Py_DecRef(mainModule)
+        }
+        
+        guard let finalResult = result else {
+            return (output: "", consoleOutput: consoleOutput)
+        }
+        
+        return (output: finalResult, consoleOutput: consoleOutput)
+    }
+    
+    /// Handles Python errors by fetching and appending the error message to console output.
+    private func handlePythonError(prefix: String, consoleOutput: inout String) {
+        if PyErr_Occurred() != nil {
+            var ptype: UnsafeMutablePointer<PyObject>?
+            var pvalue: UnsafeMutablePointer<PyObject>?
+            var ptraceback: UnsafeMutablePointer<PyObject>?
+
+            // Fetch and normalize the exception before printing
+            PyErr_Fetch(&ptype, &pvalue, &ptraceback)
+            PyErr_NormalizeException(&ptype, &pvalue, &ptraceback)
+
+            // Process the error message
+            if let pvalue = pvalue,
+               let errorMessage = PyObject_Str(pvalue),
+               let errorCString = PyUnicode_AsUTF8(errorMessage) {
+                let errorString = String(cString: errorCString)
+                consoleOutput += "\n\(prefix): \(errorString)"
+                Py_DecRef(errorMessage)
+            }
+
+            // Optionally, print the error to stderr
+            PyErr_Restore(ptype, pvalue, ptraceback)
+            PyErr_Print()
+
+            // Decrease reference counts
+            Py_XDECREF(ptype)
+            Py_XDECREF(pvalue)
+            Py_XDECREF(ptraceback)
+        }
+    }
+    
+    /// Captures the console output from Python's stdout and stderr.
+    private func captureConsoleOutput(_ consoleOutput: inout String) {
+        if let sysModule = PyImport_ImportModule("sys") {
+            if let stdout = PyObject_GetAttrString(sysModule, "stdout"),
+               let stderr = PyObject_GetAttrString(sysModule, "stderr") {
+                if let getValueMethod = PyObject_GetAttrString(stdout, "getvalue") {
+                    if let stdoutValue = PyObject_CallObject(getValueMethod, nil),
+                       let stdoutCString = PyUnicode_AsUTF8(stdoutValue) {
+                        consoleOutput += String(cString: stdoutCString)
+                        Py_DecRef(stdoutValue)
+                    }
+                    Py_DecRef(getValueMethod)
+                }
+                if let getValueMethodErr = PyObject_GetAttrString(stderr, "getvalue") {
+                    if let stderrValue = PyObject_CallObject(getValueMethodErr, nil),
+                       let stderrCString = PyUnicode_AsUTF8(stderrValue) {
+                        consoleOutput += String(cString: stderrCString)
+                        Py_DecRef(stderrValue)
+                    }
+                    Py_DecRef(getValueMethodErr)
+                }
+                Py_DecRef(stdout)
+                Py_DecRef(stderr)
+            }
+            Py_DecRef(sysModule)
+        }
+    }
+}
+\n\n=== ./LetsCode/Services/DatabaseManager.swift ===\n
+import SQLite
+import Foundation
+
+// Define a type alias to resolve the conflict
+typealias SQLiteExpression = SQLite.Expression
+
+class DatabaseManager {
+    static let shared = DatabaseManager()
+
+    private var db: Connection?
+
+    // Table definitions
+    private let users = Table("users")
+    private let problems = Table("problems")
+    private let testCases = Table("test_cases")
+
+    // User Table Columns
+    private let userId = SQLiteExpression<Int>("id")
+    private let username = SQLiteExpression<String>("username")
+    private let elo = SQLiteExpression<Int>("elo")
+
+    // Problem Table Columns
+    private let problemId = SQLiteExpression<String>("id")
+    private let title = SQLiteExpression<String>("title")
+    private let description = SQLiteExpression<String>("description")
+    private let difficulty = SQLiteExpression<String>("difficulty")
+    private let functionBody = SQLiteExpression<String>("functionBody")
+    private let solved = SQLiteExpression<Bool>("solved")
+    private let solution = SQLiteExpression<String?>("solution")
+    private let attempts = SQLiteExpression<Int>("attempts")
+
+    // TestCase Table Columns
+    private let testCaseId = SQLiteExpression<String>("id")
+    private let problemIdFK = SQLiteExpression<String>("problemId")
+    private let input = SQLiteExpression<String>("input")
+    private let functionCall = SQLiteExpression<String>("functionCall")
+    private let expectedOutput = SQLiteExpression<String>("expectedOutput")
+    private let actualOutput = SQLiteExpression<String?>("actualOutput")
+    private let passed = SQLiteExpression<Bool>("passed")
+    private let consoleOutput = SQLiteExpression<String>("consoleOutput")
+
+    private init() {
+        // Initialize the SQLite database
+        do {
+            let documentDirectory = try FileManager.default.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+            let dbPath = documentDirectory.appendingPathComponent("letscode.sqlite3").path
+            db = try Connection(dbPath)
+            createTables()
+            initializeDatabase()  // Initialize the database with predefined problems
+            ensureDefaultUserExists()
+
+        } catch {
+            print("Failed to initialize database: \(error)")
+        }
+    }
+
+    // Create Tables
+    private func createTables() {
+        do {
+            // User Table
+            try db?.run(users.create(ifNotExists: true) { table in
+                table.column(userId, primaryKey: true)
+                table.column(username, unique: true)
+                table.column(elo, defaultValue: 1000)
+            })
+
+            // Problem Table
+            try db?.run(problems.create(ifNotExists: true) { table in
+                table.column(problemId, primaryKey: true)
+                table.column(title)
+                table.column(description)
+                table.column(difficulty)
+                table.column(functionBody)
+                table.column(solved, defaultValue: false)
+                table.column(solution)
+                table.column(attempts, defaultValue: 0)
+            })
+
+            // TestCase Table
+            try db?.run(testCases.create(ifNotExists: true) { table in
+                table.column(testCaseId, primaryKey: true)
+                table.column(problemIdFK)
+                table.column(input)
+                table.column(expectedOutput)
+                table.column(functionCall)
+                table.column(actualOutput, defaultValue: "")
+                table.column(consoleOutput, defaultValue: "")
+                table.column(passed, defaultValue: false)
+                table.foreignKey(problemIdFK, references: problems, problemId, update: .cascade, delete: .cascade)
+            })
+        } catch {
+            print("Failed to create tables: \(error)")
+        }
+    }
+
+    // Initialize Database with Predefined Problems
+    private func bulkInsertProblems(_ incomingProblems: [Problem]) {
+        guard let db = db else { return }
+        do {
+            try db.transaction {
+                for problem in incomingProblems {
+                    // Insert Problem
+                    try db.run(problems.insert(
+                        problemId <- problem.id.lowercased(),
+                        title <- problem.title,
+                        description <- problem.description,
+                        difficulty <- problem.difficulty,
+                        functionBody <- problem.functionBody,
+                        solved <- problem.solved,
+                        solution <- problem.solution,
+                        attempts <- problem.attempts
+                    ))
+
+                    // Insert Test Cases
+                    for testCase in problem.testCases {
+                        try db.run(testCases.insert(
+                            testCaseId <- testCase.id,
+                            problemIdFK <- problem.id,
+                            input <- testCase.input,
+                            functionCall <- testCase.functionCall,
+                            expectedOutput <- testCase.expectedOutput,
+                            actualOutput <- testCase.actualOutput ?? "",
+                            consoleOutput <- testCase.consoleOutput,
+                            passed <- testCase.passed
+                        ))
+                    }
+                }
+                print("Inserted Problem IDs:")
+                do {
+                    for row in try db.prepare(problems.select(problemId)) {
+                        print(row[problemId])
+                    }
+                } catch {
+                    print("Error fetching inserted Problem IDs: \(error)")
+                }
+            }
+            print("Successfully inserted \(incomingProblems.count) problems with their test cases.")
+            
+        } catch {
+            print("Failed to bulk insert problems: \(error)")
+        }
+    }
+
+    // Updated Initialize Database
+    private func initializeDatabase() {
+        do {
+            // Check if there are already problems in the database
+            let problemCount = try db?.scalar(problems.count) ?? 0
+            if problemCount >= 300 {
+                print("Database already contains \(problemCount) problems. Skipping initialization.")
+                return
+            }
+
+            // Load problems from JSON
+            if let url = Bundle.main.url(forResource: "problems", withExtension: "json") {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let decodedProblems = try decoder.decode([Problem].self, from: data)
+                bulkInsertProblems(decodedProblems)
+            } else {
+                print("JSON file not found in the bundle.")
+            }
+
+            print("Database initialized with predefined problems.")
+        } catch {
+            print("Error initializing database: \(error)")
+        }
+    }
+
+    // User Management
+    func createUser(username: String) {
+        do {
+            try db?.run(users.insert(self.username <- username, elo <- 1000))
+            print("User '\(username)' created with ELO 1000.")
+        } catch {
+            print("Failed to create user: \(error)")
+        }
+    }
+
+    func getUserELO(username: String) -> Int? {
+        do {
+            if let user = try db?.pluck(users.filter(self.username == username)) {
+                return user[elo]
+            }
+        } catch {
+            print("Failed to fetch ELO: \(error)")
+        }
+        return nil
+    }
+
+    func updateUserELO(username: String, newELO: Int) {
+        let user = users.filter(self.username == username)
+        do {
+            try db?.run(user.update(elo <- newELO))
+            print("User '\(username)' ELO updated to \(newELO).")
+        } catch {
+            print("Failed to update ELO: \(error)")
+        }
+    }
+
+    // Problem Management
+    func addProblem(problem: Problem) {
+        do {
+            try db?.run(problems.insert(
+                problemId <- problem.id,
+                title <- problem.title,
+                description <- problem.description,
+                difficulty <- problem.difficulty,
+                functionBody <- problem.functionBody,
+                solved <- false,
+                solution <- nil,
+                attempts <- 0
+            ))
+            print("Problem '\(problem.title)' added to the database.")
+        } catch {
+            print("Failed to add problem: \(error)")
+        }
+    }
+
+    func markProblemAsSolved(problemId: UUID, solution: String) {
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
+        do {
+            try db?.run(problem.update(solved <- true, self.solution <- solution))
+            print("Problem with ID '\(problemId)' marked as solved.")
+        } catch {
+            print("Failed to mark problem as solved: \(error)")
+        }
+    }
+
+    func incrementProblemAttempts(problemId: UUID) {
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
+        do {
+            let update = problem.update(attempts <- attempts + 1)
+            if try db?.run(update) ?? 0 > 0 {
+                print("Incremented attempts for problem ID '\(normalizedId)'.")
+            } else {
+                print("No rows updated for problem ID '\(normalizedId)'.")
+            }
+
+            if let updatedProblem = try db?.pluck(problem) {
+                print("Updated attempts: \(updatedProblem[attempts])")
+            } else {
+                print("Failed to fetch updated attempts for problem ID '\(normalizedId)'.")
+            }
+        } catch {
+            print("Failed to increment attempts: \(error)")
+        }
+    }
+
+    func getAttemptsForProblem(problemId: UUID) -> Int {
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
+        do {
+            if let problem = try db?.pluck(problem) {
+                return problem[attempts]
+            }
+        } catch {
+            print("Failed to fetch attempts: \(error)")
+        }
+        return 0
+    }
+
+    // Fetch Problems
+    func getUnsolvedProblem(targetDifficulty: String) -> Problem? {
+        do {
+            // Query for the first unsolved problem with the specified difficulty
+            if let problemRow = try db?.pluck(problems.filter(difficulty == targetDifficulty && solved == false)) {
+                
+                // Fetch associated test cases for the problem
+                let associatedTestCases = try fetchTestCases(for: problemRow[problemId])
+                
+                // Create and return the Problem object with populated testCases
+                return Problem(
+                    id: problemRow[problemId],
+                    title: problemRow[title],
+                    description: problemRow[description],
+                    difficulty: problemRow[difficulty],
+                    functionBody: problemRow[functionBody],
+                    solved: problemRow[solved],
+                    solution: problemRow[solution],
+                    attempts: problemRow[attempts],
+                    testCases: associatedTestCases
+                )
+            }
+        } catch {
+            print("Failed to fetch unsolved problem: \(error)")
+        }
+        return nil
+    }
+
+    // Fetch User's Solved Problems Ordered by Most Recent
+    func getSolvedProblems() -> [Problem] {
+        var solvedProblems = [Problem]()
+        do {
+            // Assuming higher attempts indicate more recent solves; ideally, include a 'solvedAt' timestamp
+            for row in try db!.prepare(problems.filter(solved == true).order(attempts.desc)) {
+                let associatedTestCases = try fetchTestCases(for: row[problemId])
+                
+                let problem = Problem(
+                    id: row[problemId],
+                    title: row[title],
+                    description: row[description],
+                    difficulty: row[difficulty],
+                    functionBody: row[functionBody],
+                    solved: row[solved],
+                    solution: row[solution],
+                    attempts: row[attempts],
+                    testCases: associatedTestCases
+                )
+                solvedProblems.append(problem)
+            }
+        } catch {
+            print("Failed to fetch solved problems: \(error)")
+        }
+        return solvedProblems
+    }
+
+    // Helper Method to Fetch Test Cases for a Given Problem ID
+    private func fetchTestCases(for problemIdValue: String) throws -> [TestCase] {
+        var testCasesList = [TestCase]()
+        
+        // Define the query to filter test cases by problemIdFK
+        let query = testCases.filter(problemIdFK == problemIdValue)
+        
+        // Iterate through the filtered test cases
+        for testCaseRow in try db!.prepare(query) {
+            let testCase = TestCase(
+                id: testCaseRow[testCaseId],
+                input: testCaseRow[input],
+                expectedOutput: testCaseRow[expectedOutput],
+                actualOutput: testCaseRow[actualOutput],
+                functionCall: testCaseRow[functionCall],
+                consoleOutput: testCaseRow[consoleOutput],
+                passed: testCaseRow[passed]
+            )
+            testCasesList.append(testCase)
+        }
+        
+        return testCasesList
+    }
+    
+    private func ensureDefaultUserExists() {
+        let existingUser = users.filter(username == "Jake")
+        do {
+            if try db?.pluck(existingUser) == nil {
+                createUser(username: "Jake")
+                print("Default user 'Jake' created.")
+            } else {
+                print("Default user 'Jake' already exists.")
+            }
+        } catch {
+            print("Failed to check or create default user: \(error)")
+        }
+    }
+}
