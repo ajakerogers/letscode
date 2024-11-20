@@ -11,6 +11,7 @@
 		DCAF3E352CE305B00060325F /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; };
 		DCAF3E362CE305B00060325F /* Python.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DCAF3E372CE305B60060325F /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAF3E312CE305070060325F /* Python.xcframework */; };
+		DCAF3E402CE59D630060325F /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DCAF3E3F2CE59D630060325F /* SQLite */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCAF3E402CE59D630060325F /* SQLite in Frameworks */,
 				DCAF3E352CE305B00060325F /* Python.xcframework in Frameworks */,
 				DCAF3E372CE305B60060325F /* Python.xcframework in Frameworks */,
 			);
@@ -183,6 +185,7 @@
 			);
 			name = LetsCode;
 			packageProductDependencies = (
+				DCAF3E3F2CE59D630060325F /* SQLite */,
 			);
 			productName = LetsCode;
 			productReference = DC480A8D2CDEA4AA00F5E967 /* LetsCode.app */;
@@ -268,6 +271,9 @@
 			);
 			mainGroup = DC480A842CDEA4AA00F5E967;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DCAF3E3E2CE59D630060325F /* XCRemoteSwiftPackageReference "SQLite" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DC480A8E2CDEA4AA00F5E967 /* Products */;
 			projectDirPath = "";
@@ -710,6 +716,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DCAF3E3E2CE59D630060325F /* XCRemoteSwiftPackageReference "SQLite" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DCAF3E3F2CE59D630060325F /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCAF3E3E2CE59D630060325F /* XCRemoteSwiftPackageReference "SQLite" */;
+			productName = SQLite;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DC480A852CDEA4AA00F5E967 /* Project object */;
 }

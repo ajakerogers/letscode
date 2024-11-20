@@ -1,8 +1,9 @@
 import SwiftUI
 
 @main
-struct LeetCodeAppApp: App {
+struct LetsCodeApp: App {
     @StateObject private var viewModel = AppViewModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
 
     init() {
         // Initialize PythonRunner
@@ -11,7 +12,9 @@ struct LeetCodeAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView().environmentObject(viewModel)
+            HomeView()
+                .environmentObject(viewModel)
+                .environmentObject(profileViewModel)
         }
     }
 }

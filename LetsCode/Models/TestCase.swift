@@ -1,7 +1,7 @@
 import Foundation
 
 struct TestCase: Identifiable, Codable {
-    let id: String
+    let id: Int?
     let input: String
     let expectedOutput: String
     var actualOutput: String?

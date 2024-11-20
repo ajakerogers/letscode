@@ -179,7 +179,6 @@ class PythonRunner {
         if let sysModule = PyImport_ImportModule("sys") {
             if let stdout = PyObject_GetAttrString(sysModule, "stdout"),
                let stderr = PyObject_GetAttrString(sysModule, "stderr") {
-                print("stderr")
                 if let getValueMethod = PyObject_GetAttrString(stdout, "getvalue") {
                     if let stdoutValue = PyObject_CallObject(getValueMethod, nil),
                        let stdoutCString = PyUnicode_AsUTF8(stdoutValue) {
