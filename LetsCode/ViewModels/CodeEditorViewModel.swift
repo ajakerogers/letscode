@@ -42,7 +42,7 @@ class CodeEditorViewModel: ObservableObject {
 
             if allPassed {
                 // Mark problem as solved
-                self.db.markProblemAsSolved(problemId: problem.id!, solution: self.code)
+                self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: true)
                 // Update ELO for success
                 let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: true, problemDifficulty: problem.difficulty)
                 self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
@@ -52,9 +52,12 @@ class CodeEditorViewModel: ObservableObject {
                 self.db.incrementProblemAttempts(problemId: problem.id!)
                 // Get current attempt count
                 let attempts = self.db.getAttemptsForProblem(problemId: problem.id!)
+                
+                self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: true)
+                
                 print("attempts: ")
                 print(attempts)
-                if attempts >= 5 {
+                if attempts == 5 {
                     // Calculate ELO deduction
                     let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: false, problemDifficulty: problem.difficulty)
                     // Update ELO

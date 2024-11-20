@@ -50,6 +50,7 @@ class DatabaseManager {
             )
             let dbPath = documentDirectory.appendingPathComponent("letscode.sqlite3").path
             db = try Connection(dbPath)
+//            deleteDatabase()
             createTables()
             initializeDatabase()
             ensureDefaultUserExists()
@@ -256,10 +257,10 @@ class DatabaseManager {
         }
     }
 
-    func markProblemAsSolved(problemId: Int, solution: String) {
+    func markProblemAsCompleted(problemId: Int, solution: String, correct: Bool) {
         let problem = problems.filter(self.problemId == problemId)
         do {
-            try db?.run(problem.update(solved <- true, self.solution <- solution))
+            try db?.run(problem.update(solved <- correct, self.solution <- solution))
             print("Problem with ID \(problemId) marked as solved.")
         } catch {
             print("Failed to mark problem as solved: \(error)")
@@ -292,7 +293,7 @@ class DatabaseManager {
 
     func getUnsolvedProblem(targetDifficulty: String) -> Problem? {
         do {
-            if let problemRow = try db?.pluck(problems.filter(difficulty == targetDifficulty && solved == false)) {
+            if let problemRow = try db?.pluck(problems.filter(difficulty == targetDifficulty && solution == nil)) {
                 let associatedTestCases = try fetchTestCases(for: problemRow[problemId])
                 return Problem(
                     id: problemRow[problemId],
@@ -317,7 +318,7 @@ class DatabaseManager {
         var solvedProblems = [Problem]()
         do {
             // Assuming higher attempts indicate more recent solves; ideally, include a 'solvedAt' timestamp
-            for row in try db!.prepare(problems.filter(solved == true).order(attempts.desc)) {
+            for row in try db!.prepare(problems.filter(solution != nil).order(attempts.desc)) {
                 let associatedTestCases = try fetchTestCases(for: row[problemId])
                 
                 let problem = Problem(
