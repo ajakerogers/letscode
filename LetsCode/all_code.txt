@@ -1,4 +1,4 @@
-\n\n=== ./ViewModels/AppViewModel.swift ===\n
+-e \n\n=== ./ViewModels/AppViewModel.swift ===\n
 import Foundation
 
 class AppViewModel: ObservableObject {
@@ -39,7 +39,7 @@ class AppViewModel: ObservableObject {
         updateELO(success: false, problemDifficulty: problem.difficulty)
     }
 }
-\n\n=== ./ViewModels/CodeEditorViewModel.swift ===\n
+-e \n\n=== ./ViewModels/CodeEditorViewModel.swift ===\n
 // CodeEditorViewModel.swift
 import Foundation
 
@@ -111,7 +111,7 @@ class CodeEditorViewModel: ObservableObject {
         }
     }
 }
-\n\n=== ./ViewModels/ProfileViewModel.swift ===\n
+-e \n\n=== ./ViewModels/ProfileViewModel.swift ===\n
 import SwiftUI
 
 class ProfileViewModel: ObservableObject {
@@ -135,7 +135,7 @@ class ProfileViewModel: ObservableObject {
         self.solvedProblems = db.getSolvedProblems()
     }
 }
-\n\n=== ./Item.swift ===\n
+-e \n\n=== ./Item.swift ===\n
 //
 //  Item.swift
 //  LetsCode
@@ -154,7 +154,7 @@ final class Item {
         self.timestamp = timestamp
     }
 }
-\n\n=== ./Models/Problem.swift ===\n
+-e \n\n=== ./Models/Problem.swift ===\n
 import Foundation
 
 struct Problem: Identifiable, Codable {
@@ -168,7 +168,7 @@ struct Problem: Identifiable, Codable {
     let attempts: Int
     let testCases: [TestCase]
 }
-\n\n=== ./Models/TestCase.swift ===\n
+-e \n\n=== ./Models/TestCase.swift ===\n
 import Foundation
 
 struct TestCase: Identifiable, Codable {
@@ -180,7 +180,7 @@ struct TestCase: Identifiable, Codable {
     var consoleOutput: String // New property
     var passed: Bool
 }
-\n\n=== ./Models/CodeExecutionResponse.swift ===\n
+-e \n\n=== ./Models/CodeExecutionResponse.swift ===\n
 // CodeExecutionResponse.swift
 import Foundation
 
@@ -188,7 +188,7 @@ struct CodeExecutionResponse {
     let testCaseResults: [TestCase]
     let executionTime: TimeInterval
 }
-\n\n=== ./LetsCodeApp.swift ===\n
+-e \n\n=== ./LetsCodeApp.swift ===\n
 import SwiftUI
 
 @main
@@ -209,7 +209,7 @@ struct LetsCodeApp: App {
         }
     }
 }
-\n\n=== ./Views/CodeEditorView.swift ===\n
+-e \n\n=== ./Views/CodeEditorView.swift ===\n
 // CodeEditorView.swift
 import SwiftUI
 
@@ -365,7 +365,7 @@ struct CodeBlock: View {
         }
     }
 }
-\n\n=== ./Views/ProfileView.swift ===\n
+-e \n\n=== ./Views/ProfileView.swift ===\n
 import SwiftUI
 
 struct ProfileView: View {
@@ -447,7 +447,7 @@ struct ProfileView: View {
         }
     }
 }
-\n\n=== ./Views/CustomCodeEditor.swift ===\n
+-e \n\n=== ./Views/CustomCodeEditor.swift ===\n
 // CustomTextEditor.swift
 import SwiftUI
 
@@ -522,7 +522,7 @@ extension UITextView {
         }
     }
 }
-\n\n=== ./Views/HomeView.swift ===\n
+-e \n\n=== ./Views/HomeView.swift ===\n
 import SwiftUI
 
 struct HomeView: View {
@@ -607,7 +607,7 @@ struct HomeView: View {
         }
     }
 }
-\n\n=== ./ContentView.swift ===\n
+-e \n\n=== ./ContentView.swift ===\n
 //
 //  ContentView.swift
 //  LetsCode
@@ -669,7 +669,7 @@ struct ContentView: View {
     ContentView()
         .modelContainer(for: Item.self, inMemory: true)
 }
-\n\n=== ./Services/EloCalculationService.swift ===\n
+-e \n\n=== ./Services/EloCalculationService.swift ===\n
 import Foundation
 
 class ELOCalculationService {
@@ -731,7 +731,7 @@ class ELOCalculationService {
         }
     }
 }
-\n\n=== ./Services/CodeExecutionService.swift ===\n
+-e \n\n=== ./Services/CodeExecutionService.swift ===\n
 // CodeExecutionService.swift
 import Foundation
 
@@ -770,7 +770,7 @@ class CodeExecutionService {
         }
     }
 }
-\n\n=== ./Services/PythonRunner.swift ===\n
+-e \n\n=== ./Services/PythonRunner.swift ===\n
 // PythonRunner.swift
 import Foundation
 
@@ -975,7 +975,7 @@ class PythonRunner {
         }
     }
 }
-\n\n=== ./Services/DatabaseManager.swift ===\n
+-e \n\n=== ./Services/DatabaseManager.swift ===\n
 import SQLite
 import Foundation
 
@@ -1084,7 +1084,7 @@ class DatabaseManager {
                 for problem in incomingProblems {
                     // Insert Problem
                     try db.run(problems.insert(
-                        problemId <- problem.id,
+                        problemId <- problem.id.lowercased(),
                         title <- problem.title,
                         description <- problem.description,
                         difficulty <- problem.difficulty,
@@ -1108,8 +1108,17 @@ class DatabaseManager {
                         ))
                     }
                 }
+                print("Inserted Problem IDs:")
+                do {
+                    for row in try db.prepare(problems.select(problemId)) {
+                        print(row[problemId])
+                    }
+                } catch {
+                    print("Error fetching inserted Problem IDs: \(error)")
+                }
             }
             print("Successfully inserted \(incomingProblems.count) problems with their test cases.")
+            
         } catch {
             print("Failed to bulk insert problems: \(error)")
         }
@@ -1192,7 +1201,8 @@ class DatabaseManager {
     }
 
     func markProblemAsSolved(problemId: UUID, solution: String) {
-        let problem = problems.filter(self.problemId == problemId.uuidString)
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
         do {
             try db?.run(problem.update(solved <- true, self.solution <- solution))
             print("Problem with ID '\(problemId)' marked as solved.")
@@ -1202,24 +1212,37 @@ class DatabaseManager {
     }
 
     func incrementProblemAttempts(problemId: UUID) {
-        let problem = problems.filter(self.problemId == problemId.uuidString)
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
         do {
             let update = problem.update(attempts <- attempts + 1)
             if try db?.run(update) ?? 0 > 0 {
-                print("Incremented attempts for problem ID '\(problemId)'.")
+                print("Incremented attempts for problem ID '\(normalizedId)'.")
             } else {
-                print("No rows updated for problem ID '\(problemId)'.")
+                print("No rows updated for problem ID '\(normalizedId)'.")
             }
-            
-            // Fetch the updated attempts count
+
             if let updatedProblem = try db?.pluck(problem) {
                 print("Updated attempts: \(updatedProblem[attempts])")
             } else {
-                print("Failed to fetch updated attempts for problem ID '\(problemId)'.")
+                print("Failed to fetch updated attempts for problem ID '\(normalizedId)'.")
             }
         } catch {
             print("Failed to increment attempts: \(error)")
         }
+    }
+
+    func getAttemptsForProblem(problemId: UUID) -> Int {
+        let normalizedId = problemId.uuidString.lowercased()
+        let problem = problems.filter(self.problemId == normalizedId)
+        do {
+            if let problem = try db?.pluck(problem) {
+                return problem[attempts]
+            }
+        } catch {
+            print("Failed to fetch attempts: \(error)")
+        }
+        return 0
     }
 
     // Fetch Problems
@@ -1275,18 +1298,6 @@ class DatabaseManager {
             print("Failed to fetch solved problems: \(error)")
         }
         return solvedProblems
-    }
-
-    // Get Number of Attempts for a Problem
-    func getAttemptsForProblem(problemId: UUID) -> Int {
-        do {
-            if let problem = try db?.pluck(problems.filter(self.problemId == problemId.uuidString)) {
-                return problem[attempts]
-            }
-        } catch {
-            print("Failed to fetch attempts: \(error)")
-        }
-        return 0
     }
 
     // Helper Method to Fetch Test Cases for a Given Problem ID

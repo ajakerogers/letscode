@@ -1,7 +1,7 @@
 import Foundation
 
 struct Problem: Identifiable, Codable {
-    let id: String
+    let id: Int?
     let title: String
     let description: String
     let difficulty: String
