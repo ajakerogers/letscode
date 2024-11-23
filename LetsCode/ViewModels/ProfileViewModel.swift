@@ -2,7 +2,7 @@ import SwiftUI
 
 class ProfileViewModel: ObservableObject {
     @Published var username: String = "Guest"
-    @Published var elo: Int = 1000
+    @Published var elo: Int = 500
     @Published var solvedProblems: [Problem] = []
 
     private let db = DatabaseManager.shared

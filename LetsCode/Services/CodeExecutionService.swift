@@ -10,7 +10,7 @@ class CodeExecutionService {
             for testCase in testCases {
                 var updatedTestCase = testCase
                 let input = testCase.input
-                let functionCall = testCase.functionCall ?? ""
+                let functionCall = testCase.functionCall
 
                 // Combine code with function call for execution
                 let codeToExecute = "\(code)\nresult = \(functionCall)"

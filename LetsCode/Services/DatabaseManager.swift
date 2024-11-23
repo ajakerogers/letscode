@@ -28,6 +28,7 @@ class DatabaseManager {
     private let solved = SQLiteExpression<Bool>("solved")
     private let solution = SQLiteExpression<String?>("solution")
     private let attempts = SQLiteExpression<Int>("attempts")
+    private let eloChange = SQLiteExpression<Int?>("eloChange")
 
     // TestCase Table Columns
     private let testCaseId = SQLiteExpression<Int>("id") // Changed to Int for auto-increment
@@ -86,7 +87,7 @@ class DatabaseManager {
             try db?.run(users.create(ifNotExists: true) { table in
                 table.column(userId, primaryKey: .autoincrement)
                 table.column(username, unique: true)
-                table.column(elo, defaultValue: 1000)
+                table.column(elo, defaultValue: 500)
             })
 
             // Problem Table
@@ -97,6 +98,7 @@ class DatabaseManager {
                 table.column(difficulty)
                 table.column(functionBody)
                 table.column(solved, defaultValue: false)
+                table.column(eloChange)
                 table.column(solution)
                 table.column(attempts, defaultValue: 0)
             })
@@ -186,8 +188,8 @@ class DatabaseManager {
     // User Management
     func createUser(username: String) {
         do {
-            try db?.run(users.insert(self.username <- username, elo <- 1000))
-            print("User '\(username)' created with ELO 1000.")
+            try db?.run(users.insert(self.username <- username, elo <- 500))
+            print("User '\(username)' created with ELO 500.")
         } catch {
             print("Failed to create user: \(error)")
         }
@@ -230,6 +232,7 @@ class DatabaseManager {
                     functionBody <- problem.functionBody,
                     solved <- false,
                     solution <- nil,
+                    eloChange <- nil,
                     attempts <- 0
                 ))
 
@@ -257,10 +260,10 @@ class DatabaseManager {
         }
     }
 
-    func markProblemAsCompleted(problemId: Int, solution: String, correct: Bool) {
+    func markProblemAsCompleted(problemId: Int, solution: String, correct: Bool, eloChange: Int) {
         let problem = problems.filter(self.problemId == problemId)
         do {
-            try db?.run(problem.update(solved <- correct, self.solution <- solution))
+            try db?.run(problem.update(solved <- correct, self.solution <- solution, self.eloChange <- eloChange))
             print("Problem with ID \(problemId) marked as solved.")
         } catch {
             print("Failed to mark problem as solved: \(error)")
@@ -302,6 +305,7 @@ class DatabaseManager {
                     difficulty: problemRow[difficulty],
                     functionBody: problemRow[functionBody],
                     solved: problemRow[solved],
+                    eloChange: problemRow[eloChange],
                     solution: problemRow[solution],
                     attempts: problemRow[attempts],
                     testCases: associatedTestCases
@@ -328,6 +332,7 @@ class DatabaseManager {
                     difficulty: row[difficulty],
                     functionBody: row[functionBody],
                     solved: row[solved],
+                    eloChange: row[eloChange],
                     solution: row[solution],
                     attempts: row[attempts],
                     testCases: associatedTestCases

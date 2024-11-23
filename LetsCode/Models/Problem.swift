@@ -7,6 +7,7 @@ struct Problem: Identifiable, Codable {
     let difficulty: String
     let functionBody: String
     let solved: Bool
+    let eloChange: Int?
     let solution: String?
     let attempts: Int
     let testCases: [TestCase]

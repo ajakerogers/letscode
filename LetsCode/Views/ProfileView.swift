@@ -5,12 +5,9 @@ struct ProfileView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Profile")
+            Text(profileViewModel.username)
                 .font(.largeTitle)
                 .bold()
-
-            Text("Username: \(profileViewModel.username)")
-                .font(.headline)
             Text("ELO: \(profileViewModel.elo)")
                 .font(.headline)
 
@@ -20,6 +17,9 @@ struct ProfileView: View {
             } else {
                 List(profileViewModel.solvedProblems) { problem in
                     HStack {
+                        // Solved Status Icon
+                        Image(systemName: problem.solved ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .foregroundColor(problem.solved ? .green : .red)
                         // Problem Title (Truncated if too long)
                         Text(truncate(text: problem.title, length: 20))
                             .lineLimit(1)
@@ -34,16 +34,12 @@ struct ProfileView: View {
                             .cornerRadius(4)
 
                         // ELO Change (Assuming +20 for solved)
-                        Text("+20")
-                            .foregroundColor(.green)
+                        Text("\(problem.eloChange ?? 0)")
+                            .foregroundColor(problem.solved ? .green : .red)
                             .padding(.horizontal, 8)
                             .padding(4)
-                            .background(Color.green.opacity(0.2))
+                            .background(problem.solved ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
                             .cornerRadius(4)
-
-                        // Solved Status Icon
-                        Image(systemName: problem.solved ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(problem.solved ? .green : .red)
                     }
                 }
                 .listStyle(PlainListStyle())

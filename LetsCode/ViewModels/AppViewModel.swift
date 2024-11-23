@@ -3,13 +3,13 @@ import Foundation
 class AppViewModel: ObservableObject {
     @Published var problems: [Problem] = []
     @Published var completedProblems: [Problem] = []
-    @Published var userELO: Int = 1000
+    @Published var userELO: Int = 500
     private let db = DatabaseManager.shared
     private let username = "Jake"  // Temporary username for demo
     private let eloService = ELOCalculationService()
 
     init() {
-        userELO = db.getUserELO(username: username) ?? 1000
+        userELO = db.getUserELO(username: username) ?? 500
         loadProblems()
     }
 

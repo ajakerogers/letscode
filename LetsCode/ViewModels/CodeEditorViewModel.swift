@@ -41,27 +41,31 @@ class CodeEditorViewModel: ObservableObject {
             let allPassed = self.testCases.allSatisfy { $0.passed }
 
             if allPassed {
-                // Mark problem as solved
-                self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: true)
                 // Update ELO for success
-                let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: true, problemDifficulty: problem.difficulty)
-                self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 500, success: true, problemDifficulty: problem.difficulty)
+                self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 500) + eloChange)
                 // Optionally, notify the user of ELO gain
+                // Mark problem as solved
+                self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: true, eloChange: eloChange)
+                
+                self.showEloAlert = true
+                self.eloAlertMessage = "You've successfully solved \(problem.title)!"
             } else {
                 // Increment attempt count
                 self.db.incrementProblemAttempts(problemId: problem.id!)
                 // Get current attempt count
                 let attempts = self.db.getAttemptsForProblem(problemId: problem.id!)
-                
-                self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: true)
-                
+                                
                 print("attempts: ")
                 print(attempts)
                 if attempts == 5 {
                     // Calculate ELO deduction
-                    let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 1000, success: false, problemDifficulty: problem.difficulty)
+                    let eloChange = self.eloService.calculateELOChange(userELO: self.db.getUserELO(username: self.username) ?? 500, success: false, problemDifficulty: problem.difficulty)
+                    
+                    self.db.markProblemAsCompleted(problemId: problem.id!, solution: self.code, correct: false, eloChange: eloChange)
+                    
                     // Update ELO
-                    self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 1000) + eloChange)
+                    self.db.updateUserELO(username: self.username, newELO: (self.db.getUserELO(username: self.username) ?? 500) + eloChange)
                     // Set alert message
                     self.eloAlertMessage = "You've reached the maximum attempts for this problem. You lost \(abs(eloChange)) ELO points."
                     self.showEloAlert = true
