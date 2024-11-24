@@ -6,7 +6,7 @@ class AppViewModel: ObservableObject {
     @Published var completedProblems: [Problem] = []
     @Published var userELO: Int = 1000
     private let db = DatabaseManager.shared
-    private let username = "Jake"  // Temporary username for demo
+    private let username = "ProCoder123"  // Temporary username for demo
     private let eloService = ELOCalculationService()
 
     init() {
@@ -54,7 +54,7 @@ class CodeEditorViewModel: ObservableObject {
 
     private let codeExecutionService = CodeExecutionService()
     private let db = DatabaseManager.shared
-    private let username = "Jake" // Temporary username for demo
+    private let username = "ProCoder123" // Temporary username for demo
     private let eloService = ELOCalculationService()
 
     func runCode(problem: Problem) {
@@ -120,7 +120,7 @@ class ProfileViewModel: ObservableObject {
     @Published var solvedProblems: [Problem] = []
 
     private let db = DatabaseManager.shared
-    private let defaultUsername = "Jake"
+    private let defaultUsername = "ProCoder123"
 
     func loadUserData() {
         // Fetch user data from the database
@@ -140,7 +140,7 @@ class ProfileViewModel: ObservableObject {
 //  Item.swift
 //  LetsCode
 //
-//  Created by Jake Rogers on 11/8/24.
+//  Created by ProCoder123 Rogers on 11/8/24.
 //
 
 import Foundation
@@ -612,7 +612,7 @@ struct HomeView: View {
 //  ContentView.swift
 //  LetsCode
 //
-//  Created by Jake Rogers on 11/8/24.
+//  Created by ProCoder123 Rogers on 11/8/24.
 //
 
 import SwiftUI
@@ -1325,13 +1325,13 @@ class DatabaseManager {
     }
     
     private func ensureDefaultUserExists() {
-        let existingUser = users.filter(username == "Jake")
+        let existingUser = users.filter(username == "ProCoder123")
         do {
             if try db?.pluck(existingUser) == nil {
-                createUser(username: "Jake")
-                print("Default user 'Jake' created.")
+                createUser(username: "ProCoder123")
+                print("Default user 'ProCoder123' created.")
             } else {
-                print("Default user 'Jake' already exists.")
+                print("Default user 'ProCoder123' already exists.")
             }
         } catch {
             print("Failed to check or create default user: \(error)")

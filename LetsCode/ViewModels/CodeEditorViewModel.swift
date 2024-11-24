@@ -12,7 +12,7 @@ class CodeEditorViewModel: ObservableObject {
 
     private let codeExecutionService = CodeExecutionService()
     private let db = DatabaseManager.shared
-    private let username = "Jake" // Temporary username for demo
+    private let username = "ProCoder123" // Temporary username for demo
     private let eloService = ELOCalculationService()
 
     func runCode(problem: Problem) {

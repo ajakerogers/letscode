@@ -365,13 +365,13 @@ class DatabaseManager {
     }
     
     private func ensureDefaultUserExists() {
-        let existingUser = users.filter(username == "Jake")
+        let existingUser = users.filter(username == "ProCoder123")
         do {
             if try db?.pluck(existingUser) == nil {
-                createUser(username: "Jake")
-                print("Default user 'Jake' created.")
+                createUser(username: "ProCoder123")
+                print("Default user 'ProCoder123' created.")
             } else {
-                print("Default user 'Jake' already exists.")
+                print("Default user 'ProCoder123' already exists.")
             }
         } catch {
             print("Failed to check or create default user: \(error)")

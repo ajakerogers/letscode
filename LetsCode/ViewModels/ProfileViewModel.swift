@@ -6,7 +6,7 @@ class ProfileViewModel: ObservableObject {
     @Published var solvedProblems: [Problem] = []
 
     private let db = DatabaseManager.shared
-    private let defaultUsername = "Jake"
+    private let defaultUsername = "ProCoder123"
 
     func loadUserData() {
         // Fetch user data from the database

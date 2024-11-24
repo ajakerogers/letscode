@@ -2,7 +2,7 @@
 //  Item.swift
 //  LetsCode
 //
-//  Created by Jake Rogers on 11/8/24.
+//  Created by ProCoder123 Rogers on 11/8/24.
 //
 
 import Foundation

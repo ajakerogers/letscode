@@ -5,7 +5,7 @@ class AppViewModel: ObservableObject {
     @Published var completedProblems: [Problem] = []
     @Published var userELO: Int = 500
     private let db = DatabaseManager.shared
-    private let username = "Jake"  // Temporary username for demo
+    private let username = "ProCoder123"  // Temporary username for demo
     private let eloService = ELOCalculationService()
 
     init() {
