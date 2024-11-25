@@ -1,0 +1,1657 @@
+
+[
+  {
+    "title": "Two Sum",
+    "description": "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",
+    "difficulty": "Easy",
+    "functionBody": "def TwoSum(lst, target):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "2,7,11,15,9",
+        "expectedOutput": "[0, 1]",
+        "functionCall": "TwoSum([2,7,11,15], 9)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "3,2,4,6",
+        "expectedOutput": "[1, 2]",
+        "functionCall": "TwoSum([3,2,4], 6)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "3,3,6",
+        "expectedOutput": "[0, 1]",
+        "functionCall": "TwoSum([3,3], 6)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Reverse Integer",
+    "description": "Given a 32-bit signed integer `x`, reverse digits of `x`. If reversing `x` causes the value to go outside the signed 32-bit integer range `[-2^31, 2^31 - 1]`, then return `0`.",
+    "difficulty": "Easy",
+    "functionBody": "def reverseInteger(x):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "123",
+        "expectedOutput": "321",
+        "functionCall": "reverseInteger(123)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "-123",
+        "expectedOutput": "-321",
+        "functionCall": "reverseInteger(-123)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "120",
+        "expectedOutput": "21",
+        "functionCall": "reverseInteger(120)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "1534236469",
+        "expectedOutput": "0",
+        "functionCall": "reverseInteger(1534236469)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Palindrome Number",
+    "description": "Given an integer `x`, return `true` if `x` is a palindrome, and `false` otherwise.",
+    "difficulty": "Easy",
+    "functionBody": "def isPalindrome(x):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "121",
+        "expectedOutput": "True",
+        "functionCall": "isPalindrome(121)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "-121",
+        "expectedOutput": "False",
+        "functionCall": "isPalindrome(-121)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "10",
+        "expectedOutput": "False",
+        "functionCall": "isPalindrome(10)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Roman to Integer",
+    "description": "Given a Roman numeral `s`, convert it to an integer.",
+    "difficulty": "Easy",
+    "functionBody": "def romanToInt(s):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"III\"",
+        "expectedOutput": "3",
+        "functionCall": "romanToInt(\"III\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"IV\"",
+        "expectedOutput": "4",
+        "functionCall": "romanToInt(\"IV\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"IX\"",
+        "expectedOutput": "9",
+        "functionCall": "romanToInt(\"IX\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"LVIII\"",
+        "expectedOutput": "58",
+        "functionCall": "romanToInt(\"LVIII\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"MCMXCIV\"",
+        "expectedOutput": "1994",
+        "functionCall": "romanToInt(\"MCMXCIV\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Valid Parentheses",
+    "description": "Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['`, and `']'`, determine if the input string is valid.",
+    "difficulty": "Easy",
+    "functionBody": "def isValid(s):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"()\"",
+        "expectedOutput": "True",
+        "functionCall": "isValid(\"()\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"()[]{}\"",
+        "expectedOutput": "True",
+        "functionCall": "isValid(\"()[]{}\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"(]\"",
+        "expectedOutput": "False",
+        "functionCall": "isValid(\"(]\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"([)]\"",
+        "expectedOutput": "False",
+        "functionCall": "isValid(\"([)]\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"{[]}\"",
+        "expectedOutput": "True",
+        "functionCall": "isValid(\"{[]}\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Merge Two Sorted Lists",
+    "description": "Merge two sorted linked lists and return it as a new sorted list.",
+    "difficulty": "Easy",
+    "functionBody": "def mergeTwoLists(l1, l2):\n    # Write your function here\n    return None",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "1->2->4, 1->3->4",
+        "expectedOutput": "1->1->2->3->4->4",
+        "functionCall": "mergeTwoLists(l1, l2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "None, None",
+        "expectedOutput": "None",
+        "functionCall": "mergeTwoLists(None, None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "None, 0",
+        "expectedOutput": "0",
+        "functionCall": "mergeTwoLists(None, ListNode(0))",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Remove Duplicates from Sorted Array",
+    "description": "Given a sorted array `nums`, remove the duplicates in-place such that each element appears only once and return the new length.",
+    "difficulty": "Easy",
+    "functionBody": "def removeDuplicates(nums):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,1,2]",
+        "expectedOutput": "2",
+        "functionCall": "removeDuplicates([1,1,2])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[0,0,1,1,1,2,2,3,3,4]",
+        "expectedOutput": "5",
+        "functionCall": "removeDuplicates([0,0,1,1,1,2,2,3,3,4])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Remove Element",
+    "description": "Given an array `nums` and a value `val`, remove all instances of that value in-place and return the new length.",
+    "difficulty": "Easy",
+    "functionBody": "def removeElement(nums, val):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,2,2,3], 3",
+        "expectedOutput": "2",
+        "functionCall": "removeElement([3,2,2,3], 3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[0,1,2,2,3,0,4,2], 2",
+        "expectedOutput": "5",
+        "functionCall": "removeElement([0,1,2,2,3,0,4,2], 2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Implement strStr()",
+    "description": "Return the index of the first occurrence of `needle` in `haystack`, or `-1` if `needle` is not part of `haystack`.",
+    "difficulty": "Easy",
+    "functionBody": "def strStr(haystack, needle):\n    # Write your function here\n    return -1",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"hello\", \"ll\"",
+        "expectedOutput": "2",
+        "functionCall": "strStr(\"hello\", \"ll\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"aaaaa\", \"bba\"",
+        "expectedOutput": "-1",
+        "functionCall": "strStr(\"aaaaa\", \"bba\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"\", \"\"",
+        "expectedOutput": "0",
+        "functionCall": "strStr(\"\", \"\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Search Insert Position",
+    "description": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
+    "difficulty": "Easy",
+    "functionBody": "def searchInsert(nums, target):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,3,5,6], 5",
+        "expectedOutput": "2",
+        "functionCall": "searchInsert([1,3,5,6], 5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,3,5,6], 2",
+        "expectedOutput": "1",
+        "functionCall": "searchInsert([1,3,5,6], 2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,3,5,6], 7",
+        "expectedOutput": "4",
+        "functionCall": "searchInsert([1,3,5,6], 7)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Maximum Subarray",
+    "description": "Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
+    "difficulty": "Easy",
+    "functionBody": "def maxSubArray(nums):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[-2,1,-3,4,-1,2,1,-5,4]",
+        "expectedOutput": "6",
+        "functionCall": "maxSubArray([-2,1,-3,4,-1,2,1,-5,4])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1]",
+        "expectedOutput": "1",
+        "functionCall": "maxSubArray([1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[5,4,-1,7,8]",
+        "expectedOutput": "23",
+        "functionCall": "maxSubArray([5,4,-1,7,8])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Plus One",
+    "description": "Given a non-empty array of decimal digits representing a non-negative integer, increment one to the integer.",
+    "difficulty": "Easy",
+    "functionBody": "def plusOne(digits):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,3]",
+        "expectedOutput": "[1,2,4]",
+        "functionCall": "plusOne([1,2,3])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[4,3,2,1]",
+        "expectedOutput": "[4,3,2,2]",
+        "functionCall": "plusOne([4,3,2,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[9]",
+        "expectedOutput": "[1,0]",
+        "functionCall": "plusOne([9])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Sqrt(x)",
+    "description": "Given a non-negative integer `x`, compute and return its square root truncated to an integer.",
+    "difficulty": "Easy",
+    "functionBody": "def mySqrt(x):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "4",
+        "expectedOutput": "2",
+        "functionCall": "mySqrt(4)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "8",
+        "expectedOutput": "2",
+        "functionCall": "mySqrt(8)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0",
+        "functionCall": "mySqrt(0)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1",
+        "functionCall": "mySqrt(1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Climbing Stairs",
+    "description": "You are climbing a staircase with `n` steps. You can climb 1 or 2 steps at a time. Calculate how many distinct ways you can reach the top.",
+    "difficulty": "Easy",
+    "functionBody": "def climbStairs(n):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "2",
+        "expectedOutput": "2",
+        "functionCall": "climbStairs(2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "3",
+        "expectedOutput": "3",
+        "functionCall": "climbStairs(3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "4",
+        "expectedOutput": "5",
+        "functionCall": "climbStairs(4)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Merge Sorted Array",
+    "description": "Given two sorted integer arrays `nums1` and `nums2`, merge `nums2` into `nums1` as one sorted array. The number of elements initialized in `nums1` and `nums2` are `m` and `n` respectively.",
+    "difficulty": "Easy",
+    "functionBody": "def merge(nums1, m, nums2, n):\n    # Write your function here\n    return",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,3,0,0,0], 3, [2,5,6], 3",
+        "expectedOutput": "[1,2,2,3,5,6]",
+        "functionCall": "merge([1,2,3,0,0,0], 3, [2,5,6], 3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1], 1, [], 0",
+        "expectedOutput": "[1]",
+        "functionCall": "merge([1], 1, [], 0)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[0], 0, [1], 1",
+        "expectedOutput": "[1]",
+        "functionCall": "merge([0], 0, [1], 1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Binary Tree Inorder Traversal",
+    "description": "Given the root of a binary tree, return its inorder traversal as a list of node values.",
+    "difficulty": "Easy",
+    "functionBody": "def inorderTraversal(root):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,null,2,3]",
+        "expectedOutput": "[1,3,2]",
+        "functionCall": "inorderTraversal(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "[]",
+        "functionCall": "inorderTraversal(None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1]",
+        "expectedOutput": "[1]",
+        "functionCall": "inorderTraversal(TreeNode(1))",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Same Tree",
+    "description": "Given two binary trees, write a function to check if they are the same or not. Two binary trees are considered the same if they are structurally identical and the nodes have the same value.",
+    "difficulty": "Easy",
+    "functionBody": "def isSameTree(p, q):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,3], [1,2,3]",
+        "expectedOutput": "True",
+        "functionCall": "isSameTree(p, q)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2], [1,null,2]",
+        "expectedOutput": "False",
+        "functionCall": "isSameTree(p, q)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2,1], [1,1,2]",
+        "expectedOutput": "False",
+        "functionCall": "isSameTree(p, q)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Symmetric Tree",
+    "description": "Given a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).",
+    "difficulty": "Easy",
+    "functionBody": "def isSymmetric(root):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,2,3,4,4,3]",
+        "expectedOutput": "True",
+        "functionCall": "isSymmetric(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2,2,null,3,null,3]",
+        "expectedOutput": "False",
+        "functionCall": "isSymmetric(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Maximum Depth of Binary Tree",
+    "description": "Given a binary tree, find its maximum depth. The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.",
+    "difficulty": "Easy",
+    "functionBody": "def maxDepth(root):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,9,20,null,null,15,7]",
+        "expectedOutput": "3",
+        "functionCall": "maxDepth(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,null,2]",
+        "expectedOutput": "2",
+        "functionCall": "maxDepth(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "0",
+        "functionCall": "maxDepth(None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Convert Sorted Array to Binary Search Tree",
+    "description": "Given an integer array `nums` where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.",
+    "difficulty": "Easy",
+    "functionBody": "def sortedArrayToBST(nums):\n    # Write your function here\n    return None",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[-10,-3,0,5,9]",
+        "expectedOutput": "A height-balanced BST",
+        "functionCall": "sortedArrayToBST([-10,-3,0,5,9])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,3]",
+        "expectedOutput": "A height-balanced BST",
+        "functionCall": "sortedArrayToBST([1,3])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Balanced Binary Tree",
+    "description": "Given a binary tree, determine if it is height-balanced.",
+    "difficulty": "Easy",
+    "functionBody": "def isBalanced(root):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,9,20,null,null,15,7]",
+        "expectedOutput": "True",
+        "functionCall": "isBalanced(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2,2,3,3,null,null,4,4]",
+        "expectedOutput": "False",
+        "functionCall": "isBalanced(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Minimum Depth of Binary Tree",
+    "description": "Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.",
+    "difficulty": "Easy",
+    "functionBody": "def minDepth(root):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,9,20,null,null,15,7]",
+        "expectedOutput": "2",
+        "functionCall": "minDepth(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[2,null,3,null,4,null,5,null,6]",
+        "expectedOutput": "5",
+        "functionCall": "minDepth(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Path Sum",
+    "description": "Given the root of a binary tree and an integer `targetSum`, return `true` if the tree has a root-to-leaf path such that adding up all the values along the path equals `targetSum`.",
+    "difficulty": "Easy",
+    "functionBody": "def hasPathSum(root, targetSum):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[5,4,8,11,null,13,4,7,2,null,null,null,1], 22",
+        "expectedOutput": "True",
+        "functionCall": "hasPathSum(root, 22)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2,3], 5",
+        "expectedOutput": "False",
+        "functionCall": "hasPathSum(root, 5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[], 0",
+        "expectedOutput": "False",
+        "functionCall": "hasPathSum(None, 0)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Pascal's Triangle",
+    "description": "Given an integer `numRows`, generate the first `numRows` of Pascal's Triangle.",
+    "difficulty": "Easy",
+    "functionBody": "def generate(numRows):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "5",
+        "expectedOutput": "[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]",
+        "functionCall": "generate(5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "1",
+        "expectedOutput": "[[1]]",
+        "functionCall": "generate(1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Best Time to Buy and Sell Stock",
+    "description": "Given an array `prices` where `prices[i]` is the price of a given stock on day `i`, find the maximum profit you can achieve from one transaction.",
+    "difficulty": "Easy",
+    "functionBody": "def maxProfit(prices):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[7,1,5,3,6,4]",
+        "expectedOutput": "5",
+        "functionCall": "maxProfit([7,1,5,3,6,4])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[7,6,4,3,1]",
+        "expectedOutput": "0",
+        "functionCall": "maxProfit([7,6,4,3,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Valid Palindrome",
+    "description": "Given a string `s`, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
+    "difficulty": "Easy",
+    "functionBody": "def isPalindrome(s):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"A man, a plan, a canal: Panama\"",
+        "expectedOutput": "True",
+        "functionCall": "isPalindrome(\"A man, a plan, a canal: Panama\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"race a car\"",
+        "expectedOutput": "False",
+        "functionCall": "isPalindrome(\"race a car\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"\"",
+        "expectedOutput": "True",
+        "functionCall": "isPalindrome(\"\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Single Number",
+    "description": "Given a non-empty array of integers `nums`, every element appears twice except for one. Find that single one.",
+    "difficulty": "Easy",
+    "functionBody": "def singleNumber(nums):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[2,2,1]",
+        "expectedOutput": "1",
+        "functionCall": "singleNumber([2,2,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[4,1,2,1,2]",
+        "expectedOutput": "4",
+        "functionCall": "singleNumber([4,1,2,1,2])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1]",
+        "expectedOutput": "1",
+        "functionCall": "singleNumber([1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Linked List Cycle",
+    "description": "Given a linked list, determine if it has a cycle in it.",
+    "difficulty": "Easy",
+    "functionBody": "def hasCycle(head):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "head = [3,2,0,-4], pos = 1",
+        "expectedOutput": "True",
+        "functionCall": "hasCycle(head)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "head = [1,2], pos = 0",
+        "expectedOutput": "True",
+        "functionCall": "hasCycle(head)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "expectedOutput": "False",
+        "functionCall": "hasCycle(head)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Min Stack",
+    "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.",
+    "difficulty": "Easy",
+    "functionBody": "class MinStack:\n    def __init__(self):\n        # Write your code here\n        pass\n    def push(self, val):\n        pass\n    def pop(self):\n        pass\n    def top(self):\n        pass\n    def getMin(self):\n        pass",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": ["MinStack","push","push","push","getMin","pop","top","getMin"],
+        "expectedOutput": [null,null,null,null,-3,null,0,-2],
+        "functionCall": "obj = MinStack(); obj.push(-2); obj.push(0); obj.push(-3); obj.getMin(); obj.pop(); obj.top(); obj.getMin()",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Intersection of Two Linked Lists",
+    "description": "Given the heads of two singly linked-lists `headA` and `headB`, return the node at which the two lists intersect. If the two linked lists have no intersection at all, return `None`.",
+    "difficulty": "Easy",
+    "functionBody": "def getIntersectionNode(headA, headB):\n    # Write your function here\n    return None",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "Intersected at '8', listA = [4,1,8,4,5], listB = [5,6,1,8,4,5]",
+        "expectedOutput": "Reference of the node with value = 8",
+        "functionCall": "getIntersectionNode(headA, headB)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "No intersection, listA = [2,6,4], listB = [1,5]",
+        "expectedOutput": "None",
+        "functionCall": "getIntersectionNode(headA, headB)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Majority Element",
+    "description": "Given an array `nums` of size n, return the majority element. The majority element is the element that appears more than ⌊n / 2⌋ times.",
+    "difficulty": "Easy",
+    "functionBody": "def majorityElement(nums):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,2,3]",
+        "expectedOutput": "3",
+        "functionCall": "majorityElement([3,2,3])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[2,2,1,1,1,2,2]",
+        "expectedOutput": "2",
+        "functionCall": "majorityElement([2,2,1,1,1,2,2])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Excel Sheet Column Number",
+    "description": "Given a string `columnTitle` that represents the column title as appear in an Excel sheet, return its corresponding column number.",
+    "difficulty": "Easy",
+    "functionBody": "def titleToNumber(columnTitle):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"A\"",
+        "expectedOutput": "1",
+        "functionCall": "titleToNumber(\"A\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"AB\"",
+        "expectedOutput": "28",
+        "functionCall": "titleToNumber(\"AB\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"ZY\"",
+        "expectedOutput": "701",
+        "functionCall": "titleToNumber(\"ZY\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Factorial Trailing Zeroes",
+    "description": "Given an integer `n`, return the number of trailing zeroes in `n!`.",
+    "difficulty": "Easy",
+    "functionBody": "def trailingZeroes(n):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "3",
+        "expectedOutput": "0",
+        "functionCall": "trailingZeroes(3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "5",
+        "expectedOutput": "1",
+        "functionCall": "trailingZeroes(5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0",
+        "functionCall": "trailingZeroes(0)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Binary Tree Level Order Traversal II",
+    "description": "Given the root of a binary tree, return the bottom-up level order traversal of its nodes' values.",
+    "difficulty": "Easy",
+    "functionBody": "def levelOrderBottom(root):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,9,20,null,null,15,7]",
+        "expectedOutput": "[[15,7],[9,20],[3]]",
+        "functionCall": "levelOrderBottom(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1]",
+        "expectedOutput": "[[1]]",
+        "functionCall": "levelOrderBottom(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "[]",
+        "functionCall": "levelOrderBottom(None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Reverse Bits",
+    "description": "Reverse bits of a given 32 bits unsigned integer.",
+    "difficulty": "Easy",
+    "functionBody": "def reverseBits(n):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "43261596",
+        "expectedOutput": "964176192",
+        "functionCall": "reverseBits(43261596)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "4294967293",
+        "expectedOutput": "3221225471",
+        "functionCall": "reverseBits(4294967293)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Number of 1 Bits",
+    "description": "Write a function that takes an unsigned integer and returns the number of '1' bits it has.",
+    "difficulty": "Easy",
+    "functionBody": "def hammingWeight(n):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "11",
+        "expectedOutput": "3",
+        "functionCall": "hammingWeight(11)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "128",
+        "expectedOutput": "1",
+        "functionCall": "hammingWeight(128)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "4294967293",
+        "expectedOutput": "31",
+        "functionCall": "hammingWeight(4294967293)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Happy Number",
+    "description": "Determine if a number `n` is happy by replacing it with the sum of the squares of its digits repeatedly.",
+    "difficulty": "Easy",
+    "functionBody": "def isHappy(n):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "19",
+        "expectedOutput": "True",
+        "functionCall": "isHappy(19)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "2",
+        "expectedOutput": "False",
+        "functionCall": "isHappy(2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Remove Linked List Elements",
+    "description": "Remove all nodes from a linked list that have a specific value.",
+    "difficulty": "Easy",
+    "functionBody": "def removeElements(head, val):\n    # Write your function here\n    return head",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "head = [1,2,6,3,4,5,6], val = 6",
+        "expectedOutput": "[1,2,3,4,5]",
+        "functionCall": "removeElements(head, 6)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "head = [], val = 1",
+        "expectedOutput": "[]",
+        "functionCall": "removeElements(None, 1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "head = [7,7,7,7], val = 7",
+        "expectedOutput": "[]",
+        "functionCall": "removeElements(head, 7)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Reverse Linked List",
+    "description": "Reverse a singly linked list.",
+    "difficulty": "Easy",
+    "functionBody": "def reverseList(head):\n    # Write your function here\n    return head",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,3,4,5]",
+        "expectedOutput": "[5,4,3,2,1]",
+        "functionCall": "reverseList(head)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2]",
+        "expectedOutput": "[2,1]",
+        "functionCall": "reverseList(head)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "[]",
+        "functionCall": "reverseList(None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Contains Duplicate",
+    "description": "Check if an array contains any duplicates.",
+    "difficulty": "Easy",
+    "functionBody": "def containsDuplicate(nums):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[1,2,3,1]",
+        "expectedOutput": "True",
+        "functionCall": "containsDuplicate([1,2,3,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,2,3,4]",
+        "expectedOutput": "False",
+        "functionCall": "containsDuplicate([1,2,3,4])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[1,1,1,3,3,4,3,2,4,2]",
+        "expectedOutput": "True",
+        "functionCall": "containsDuplicate([1,1,1,3,3,4,3,2,4,2])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Implement Queue using Stacks",
+    "description": "Implement a queue using two stacks.",
+    "difficulty": "Easy",
+    "functionBody": "class MyQueue:\n    def __init__(self):\n        # Write your code here\n        pass\n    def push(self, x):\n        pass\n    def pop(self):\n        pass\n    def peek(self):\n        pass\n    def empty(self):\n        return True",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": ["MyQueue", "push", "push", "peek", "pop", "empty"], "arguments": [[], [1], [2], [], [], []],
+        "expectedOutput": [null, null, null, 1, 1, False],
+        "functionCall": "obj = MyQueue(); obj.push(1); obj.push(2); obj.peek(); obj.pop(); obj.empty()",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Move Zeroes",
+    "description": "Move all zeros in an array to the end while maintaining the order of other elements.",
+    "difficulty": "Easy",
+    "functionBody": "def moveZeroes(nums):\n    # Write your function here\n    return",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[0,1,0,3,12]",
+        "expectedOutput": "[1,3,12,0,0]",
+        "functionCall": "moveZeroes([0,1,0,3,12])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[0]",
+        "expectedOutput": "[0]",
+        "functionCall": "moveZeroes([0])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Invert Binary Tree",
+    "description": "Invert a binary tree.",
+    "difficulty": "Easy",
+    "functionBody": "def invertTree(root):\n    # Write your function here\n    return root",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[4,2,7,1,3,6,9]",
+        "expectedOutput": "[4,7,2,9,6,3,1]",
+        "functionCall": "invertTree(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[2,1,3]",
+        "expectedOutput": "[2,3,1]",
+        "functionCall": "invertTree(root)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "[]",
+        "functionCall": "invertTree(None)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Power of Two",
+    "description": "Determine if an integer is a power of two.",
+    "difficulty": "Easy",
+    "functionBody": "def isPowerOfTwo(n):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "1",
+        "expectedOutput": "True",
+        "functionCall": "isPowerOfTwo(1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "16",
+        "expectedOutput": "True",
+        "functionCall": "isPowerOfTwo(16)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "3",
+        "expectedOutput": "False",
+        "functionCall": "isPowerOfTwo(3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Ugly Number",
+    "description": "Determine if a number is an ugly number (only prime factors are 2, 3, or 5).",
+    "difficulty": "Easy",
+    "functionBody": "def isUgly(n):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "6",
+        "expectedOutput": "True",
+        "functionCall": "isUgly(6)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "8",
+        "expectedOutput": "True",
+        "functionCall": "isUgly(8)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "14",
+        "expectedOutput": "False",
+        "functionCall": "isUgly(14)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Missing Number",
+    "description": "Find the missing number from an array containing n distinct numbers taken from 0 to n.",
+    "difficulty": "Easy",
+    "functionBody": "def missingNumber(nums):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[3,0,1]",
+        "expectedOutput": "2",
+        "functionCall": "missingNumber([3,0,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[0,1]",
+        "expectedOutput": "2",
+        "functionCall": "missingNumber([0,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[9,6,4,2,3,5,7,0,1]",
+        "expectedOutput": "8",
+        "functionCall": "missingNumber([9,6,4,2,3,5,7,0,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "First Bad Version",
+    "description": "Find the first bad version in a series of versions using a given API.",
+    "difficulty": "Easy",
+    "functionBody": "def firstBadVersion(n):\n    # Write your function here\n    return 1",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "n = 5, bad = 4",
+        "expectedOutput": "4",
+        "functionCall": "firstBadVersion(5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "n = 1, bad = 1",
+        "expectedOutput": "1",
+        "functionCall": "firstBadVersion(1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Ransom Note",
+    "description": "Determine if a ransom note can be constructed from the letters in a magazine.",
+    "difficulty": "Easy",
+    "functionBody": "def canConstruct(ransomNote, magazine):\n    # Write your function here\n    return False",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "\"a\", \"b\"",
+        "expectedOutput": "False",
+        "functionCall": "canConstruct(\"a\", \"b\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"aa\", \"ab\"",
+        "expectedOutput": "False",
+        "functionCall": "canConstruct(\"aa\", \"ab\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "\"aa\", \"aab\"",
+        "expectedOutput": "True",
+        "functionCall": "canConstruct(\"aa\", \"aab\")",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Fizz Buzz",
+    "description": "Output numbers from 1 to n, replacing multiples of 3 with 'Fizz', 5 with 'Buzz', and both with 'FizzBuzz'.",
+    "difficulty": "Easy",
+    "functionBody": "def fizzBuzz(n):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "3",
+        "expectedOutput": "[\"1\",\"2\",\"Fizz\"]",
+        "functionCall": "fizzBuzz(3)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "5",
+        "expectedOutput": "[\"1\",\"2\",\"Fizz\",\"4\",\"Buzz\"]",
+        "functionCall": "fizzBuzz(5)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "15",
+        "expectedOutput": "[\"1\",\"2\",\"Fizz\",\"4\",\"Buzz\",\"Fizz\",\"7\",\"8\",\"Fizz\",\"Buzz\",\"11\",\"Fizz\",\"13\",\"14\",\"FizzBuzz\"]",
+        "functionCall": "fizzBuzz(15)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Guess Number Higher or Lower",
+    "description": "Implement a number guessing game using a predefined API to find a secret number.",
+    "difficulty": "Easy",
+    "functionBody": "def guessNumber(n):\n    # Write your function here\n    return 1",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "n = 10, pick = 6",
+        "expectedOutput": "6",
+        "functionCall": "guessNumber(10)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "n = 1, pick = 1",
+        "expectedOutput": "1",
+        "functionCall": "guessNumber(1)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "n = 2, pick = 1",
+        "expectedOutput": "1",
+        "functionCall": "guessNumber(2)",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  }
+]
