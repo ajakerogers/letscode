@@ -1,40 +1,40 @@
 
 [
-  {
-    "title": "Two Sum",
-    "description": "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",
-    "difficulty": "Easy",
-    "functionBody": "def TwoSum(lst, target):\n    # Write your function here\n    return []",
-    "solved": false,
-    "solution": null,
-    "attempts": 0,
-    "testCases": [
-      {
-        "input": "2,7,11,15,9",
-        "expectedOutput": "[0, 1]",
-        "functionCall": "TwoSum([2,7,11,15], 9)",
-        "actualOutput": "",
-        "consoleOutput": "",
-        "passed": false
-      },
-      {
-        "input": "3,2,4,6",
-        "expectedOutput": "[1, 2]",
-        "functionCall": "TwoSum([3,2,4], 6)",
-        "actualOutput": "",
-        "consoleOutput": "",
-        "passed": false
-      },
-      {
-        "input": "3,3,6",
-        "expectedOutput": "[0, 1]",
-        "functionCall": "TwoSum([3,3], 6)",
-        "actualOutput": "",
-        "consoleOutput": "",
-        "passed": false
-      }
-    ]
-  },
+    {
+      "title": "Two Sum",
+      "description": "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",
+      "difficulty": "Easy",
+      "functionBody": "def twoSum(nums, target):\n    # Write your function here\n    return []",
+      "solved": false,
+      "solution": null,
+      "attempts": 0,
+      "testCases": [
+        {
+          "input": "[2,7,11,15], 9",
+          "expectedOutput": "[0, 1]",
+          "functionCall": "twoSum([2,7,11,15], 9)",
+          "actualOutput": "",
+          "consoleOutput": "",
+          "passed": false
+        },
+        {
+          "input": "[3,2,4], 6",
+          "expectedOutput": "[1, 2]",
+          "functionCall": "twoSum([3,2,4], 6)",
+          "actualOutput": "",
+          "consoleOutput": "",
+          "passed": false
+        },
+        {
+          "input": "[3,3], 6",
+          "expectedOutput": "[0, 1]",
+          "functionCall": "twoSum([3,3], 6)",
+          "actualOutput": "",
+          "consoleOutput": "",
+          "passed": false
+        }
+      ]
+    },
   {
     "title": "Reverse Integer",
     "description": "Given a 32-bit signed integer `x`, reverse digits of `x`. If reversing `x` causes the value to go outside the signed 32-bit integer range `[-2^31, 2^31 - 1]`, then return `0`.",
@@ -80,7 +80,7 @@
   },
   {
     "title": "Palindrome Number",
-    "description": "Given an integer `x`, return `true` if `x` is a palindrome, and `false` otherwise.",
+    "description": "Given an integer `x`, return `True` if `x` is a palindrome and `False` otherwise.",
     "difficulty": "Easy",
     "functionBody": "def isPalindrome(x):\n    # Write your function here\n    return False",
     "solved": false,
@@ -123,41 +123,41 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": "\"III\"",
+        "input": "'III'",
         "expectedOutput": "3",
-        "functionCall": "romanToInt(\"III\")",
+        "functionCall": "romanToInt('III')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"IV\"",
+        "input": "'IV'",
         "expectedOutput": "4",
-        "functionCall": "romanToInt(\"IV\")",
+        "functionCall": "romanToInt('IV')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"IX\"",
+        "input": "'IX'",
         "expectedOutput": "9",
-        "functionCall": "romanToInt(\"IX\")",
+        "functionCall": "romanToInt('IX')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"LVIII\"",
+        "input": "'LVIII'",
         "expectedOutput": "58",
-        "functionCall": "romanToInt(\"LVIII\")",
+        "functionCall": "romanToInt('LVIII')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"MCMXCIV\"",
+        "input": "'MCMXCIV'",
         "expectedOutput": "1994",
-        "functionCall": "romanToInt(\"MCMXCIV\")",
+        "functionCall": "romanToInt('MCMXCIV')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
@@ -174,41 +174,41 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": "\"()\"",
+        "input": "'()'",
         "expectedOutput": "True",
-        "functionCall": "isValid(\"()\")",
+        "functionCall": "isValid('()')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"()[]{}\"",
+        "input": "'()[]{}'",
         "expectedOutput": "True",
-        "functionCall": "isValid(\"()[]{}\")",
+        "functionCall": "isValid('()[]{}')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"(]\"",
+        "input": "'(]'",
         "expectedOutput": "False",
-        "functionCall": "isValid(\"(]\")",
+        "functionCall": "isValid('(]')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"([)]\"",
+        "input": "'([)]'",
         "expectedOutput": "False",
-        "functionCall": "isValid(\"([)]\")",
+        "functionCall": "isValid('([)]')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"{[]}\"",
+        "input": "'{[]}'",
         "expectedOutput": "True",
-        "functionCall": "isValid(\"{[]}\")",
+        "functionCall": "isValid('{[]}')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
@@ -225,25 +225,25 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": "1->2->4, 1->3->4",
-        "expectedOutput": "1->1->2->3->4->4",
-        "functionCall": "mergeTwoLists(l1, l2)",
+        "input": "[1,2,4], [1,3,4]",
+        "expectedOutput": "[1,1,2,3,4,4]",
+        "functionCall": "mergeTwoLists([1,2,4], [1,3,4])",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "None, None",
-        "expectedOutput": "None",
-        "functionCall": "mergeTwoLists(None, None)",
+        "input": "[], []",
+        "expectedOutput": "[]",
+        "functionCall": "mergeTwoLists([], [])",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "None, 0",
-        "expectedOutput": "0",
-        "functionCall": "mergeTwoLists(None, ListNode(0))",
+        "input": "[], [0]",
+        "expectedOutput": "[0]",
+        "functionCall": "mergeTwoLists([], [0])",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
@@ -314,25 +314,25 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": "\"hello\", \"ll\"",
+        "input": "'hello', 'll'",
         "expectedOutput": "2",
-        "functionCall": "strStr(\"hello\", \"ll\")",
+        "functionCall": "strStr('hello', 'll')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"aaaaa\", \"bba\"",
+        "input": "'aaaaa', 'bba'",
         "expectedOutput": "-1",
-        "functionCall": "strStr(\"aaaaa\", \"bba\")",
+        "functionCall": "strStr('aaaaa', 'bba')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
       },
       {
-        "input": "\"\", \"\"",
+        "input": "'', ''",
         "expectedOutput": "0",
-        "functionCall": "strStr(\"\", \"\")",
+        "functionCall": "strStr('', '')",
         "actualOutput": "",
         "consoleOutput": "",
         "passed": false
@@ -548,7 +548,7 @@
         "passed": false
       },
       {
-        "input": "[0], 0, [1], 1",
+        "input": "[0], 0, [1], 1", 
         "expectedOutput": "[1]",
         "functionCall": "merge([0], 0, [1], 1)",
         "actualOutput": "",
@@ -1346,8 +1346,8 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": ["MyQueue", "push", "push", "peek", "pop", "empty"], "arguments": [[], [1], [2], [], [], []],
-        "expectedOutput": [null, null, null, 1, 1, False],
+        "input": "[\"MyQueue\", \"push\", \"push\", \"peek\", \"pop\", \"empty\"]",
+        "expectedOutput": "[null, null, null, 1, 1, False]",
         "functionCall": "obj = MyQueue(); obj.push(1); obj.push(2); obj.peek(); obj.pop(); obj.empty()",
         "actualOutput": "",
         "consoleOutput": "",

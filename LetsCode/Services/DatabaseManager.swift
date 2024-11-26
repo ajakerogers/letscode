@@ -170,7 +170,7 @@ class DatabaseManager {
             }
 
             // Load problems from JSON
-            if let url = Bundle.main.url(forResource: "problems", withExtension: "json") {
+            if let url = Bundle.main.url(forResource: "problemsWip", withExtension: "json") {
                 let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()
                 let decodedProblems = try decoder.decode([Problem].self, from: data)
