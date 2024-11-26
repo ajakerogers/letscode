@@ -17,6 +17,7 @@ struct ProfileView: View {
             } else {
                 List(profileViewModel.solvedProblems) { problem in
                     HStack {
+                        let eloChange = problem.eloChange ?? 0
                         // Solved Status Icon
                         Image(systemName: problem.solved ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundColor(problem.solved ? .green : .red)
@@ -34,7 +35,7 @@ struct ProfileView: View {
                             .cornerRadius(4)
 
                         // ELO Change (Assuming +20 for solved)
-                        Text("\(problem.eloChange ?? 0)")
+                        Text(eloChange >= 0 ? "+\(eloChange)" : "\(eloChange)")
                             .foregroundColor(problem.solved ? .green : .red)
                             .padding(.horizontal, 8)
                             .padding(4)

@@ -548,7 +548,7 @@
         "passed": false
       },
       {
-        "input": "[0], 0, [1], 1", 
+        "input": "[0], 0, [1], 1",
         "expectedOutput": "[1]",
         "functionCall": "merge([0], 0, [1], 1)",
         "actualOutput": "",
@@ -974,8 +974,8 @@
     "attempts": 0,
     "testCases": [
       {
-        "input": ["MinStack","push","push","push","getMin","pop","top","getMin"],
-        "expectedOutput": [null,null,null,null,-3,null,0,-2],
+        "input": "[MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]",
+        "expectedOutput": "[null,null,null,null,-3,null,0,-2]",
         "functionCall": "obj = MinStack(); obj.push(-2); obj.push(0); obj.push(-3); obj.getMin(); obj.pop(); obj.top(); obj.getMin()",
         "actualOutput": "",
         "consoleOutput": "",
