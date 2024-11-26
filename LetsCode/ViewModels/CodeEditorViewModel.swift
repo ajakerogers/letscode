@@ -9,11 +9,13 @@ class CodeEditorViewModel: ObservableObject {
     @Published var executionTime: TimeInterval = 0.0
     @Published var showEloAlert: Bool = false
     @Published var eloAlertMessage: String = ""
+    @Published var numberOfAttempts = 0
 
     private let codeExecutionService = CodeExecutionService()
     private let db = DatabaseManager.shared
     private let username = "ProCoder123" // Temporary username for demo
     private let eloService = ELOCalculationService()
+
 
     func runCode(problem: Problem) {
         guard !code.isEmpty else { return }
@@ -55,6 +57,8 @@ class CodeEditorViewModel: ObservableObject {
                 self.db.incrementProblemAttempts(problemId: problem.id!)
                 // Get current attempt count
                 let attempts = self.db.getAttemptsForProblem(problemId: problem.id!)
+                
+                self.numberOfAttempts = attempts
                                 
                 print("attempts: ")
                 print(attempts)

@@ -59,6 +59,15 @@ struct CodeEditorView: View {
                         .padding(15)
                         .background(summaryColor)
                         .cornerRadius(4)
+                        
+                        // Display number of attempts
+                        HStack {
+                            Text("Number of Attempts: \(viewModel.numberOfAttempts < 5 ? "\(viewModel.numberOfAttempts) / 5" : "\(viewModel.numberOfAttempts)")")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
                     }
                     .padding(.horizontal)
 
