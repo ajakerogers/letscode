@@ -1653,5 +1653,145 @@
         "passed": false
       }
     ]
+  },
+  {
+    "title": "Longest Substring Without Repeating Characters",
+    "description": "Given a string `s`, find the length of the longest substring without repeating characters.",
+    "difficulty": "Medium",
+    "functionBody": "def lengthOfLongestSubstring(s):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "abcabcbb",
+        "expectedOutput": "3",
+        "functionCall": "lengthOfLongestSubstring('abcabcbb')",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "bbbbb",
+        "expectedOutput": "1",
+        "functionCall": "lengthOfLongestSubstring('bbbbb')",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "pwwkew",
+        "expectedOutput": "3",
+        "functionCall": "lengthOfLongestSubstring('pwwkew')",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Merge Intervals",
+    "description": "Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals.",
+    "difficulty": "Medium",
+    "functionBody": "def merge(intervals):\n    # Write your function here\n    return []",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "[[1,3],[2,6],[8,10],[15,18]]",
+        "expectedOutput": "[[1,6],[8,10],[15,18]]",
+        "functionCall": "merge([[1,3],[2,6],[8,10],[15,18]])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[[1,4],[4,5]]",
+        "expectedOutput": "[[1,5]]",
+        "functionCall": "merge([[1,4],[4,5]])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "[[1,4],[2,3]]",
+        "expectedOutput": "[[1,4]]",
+        "functionCall": "merge([[1,4],[2,3]])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Trapping Rain Water",
+    "description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+    "difficulty": "Hard",
+    "functionBody": "def trap(height):\n    # Write your function here\n    return 0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "0,1,0,2,1,0,1,3,2,1,2,1",
+        "expectedOutput": "6",
+        "functionCall": "trap([0,1,0,2,1,0,1,3,2,1,2,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "4,2,0,3,2,5",
+        "expectedOutput": "9",
+        "functionCall": "trap([4,2,0,3,2,5])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "1,0,1",
+        "expectedOutput": "1",
+        "functionCall": "trap([1,0,1])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
+  },
+  {
+    "title": "Median of Two Sorted Arrays",
+    "description": "Given two sorted arrays `nums1` and `nums2` of size m and n respectively, return the median of the two sorted arrays.",
+    "difficulty": "Hard",
+    "functionBody": "def findMedianSortedArrays(nums1, nums2):\n    # Write your function here\n    return 0.0",
+    "solved": false,
+    "solution": null,
+    "attempts": 0,
+    "testCases": [
+      {
+        "input": "1,3;2",
+        "expectedOutput": "2.0",
+        "functionCall": "findMedianSortedArrays([1,3], [2])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "1,2;3,4",
+        "expectedOutput": "2.5",
+        "functionCall": "findMedianSortedArrays([1,2], [3,4])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      },
+      {
+        "input": "0,0;0,0",
+        "expectedOutput": "0.0",
+        "functionCall": "findMedianSortedArrays([0,0], [0,0])",
+        "actualOutput": "",
+        "consoleOutput": "",
+        "passed": false
+      }
+    ]
   }
 ]
