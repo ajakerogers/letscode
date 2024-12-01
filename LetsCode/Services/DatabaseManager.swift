@@ -321,7 +321,6 @@ class DatabaseManager {
     func getSolvedProblems() -> [Problem] {
         var solvedProblems = [Problem]()
         do {
-            // Assuming higher attempts indicate more recent solves; ideally, include a 'solvedAt' timestamp
             for row in try db!.prepare(problems.filter(solution != nil).order(attempts.desc)) {
                 let associatedTestCases = try fetchTestCases(for: row[problemId])
                 

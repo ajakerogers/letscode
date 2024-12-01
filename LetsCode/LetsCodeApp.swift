@@ -6,7 +6,6 @@ struct LetsCodeApp: App {
     @StateObject private var profileViewModel = ProfileViewModel()
 
     init() {
-        // Initialize PythonRunner
         PythonRunner.shared.initializePython()
     }
 
